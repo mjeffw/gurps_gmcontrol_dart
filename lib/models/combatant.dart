@@ -64,7 +64,7 @@ enum PostureValue {
 abstract class Enumeration {
   List<String> get allValues;
   int get valueIndex;
-  String get value;
+  String get textValue;
 }
 
 class Posture implements Enumeration {
@@ -87,7 +87,7 @@ class Posture implements Enumeration {
 
   List<String> get allValues => _postures;
   int get valueIndex => _value.index;
-  String get value => _postures[_value.index];
+  String get textValue => _postures[_value.index];
 }
 
 enum ManeuverValue {
@@ -121,17 +121,17 @@ class Maneuver implements Enumeration {
     'Wait'
   ];
 
-  ManeuverValue _value;
+  ManeuverValue value;
 
-  Maneuver(this._value);
+  Maneuver({this.value = ManeuverValue.do_nothing});
 
   Maneuver.fromJSON(json)
-      : _value = ManeuverValue.values.firstWhere(
-            (e) => e.toString().split('.')[1] == json['maneuver'] as String);
+      : value = ManeuverValue.values.firstWhere(
+            (e) => e.toString().split('.')[1] == json['value'] as String);
 
   List<String> get allValues => _values;
-  int get valueIndex => _value.index;
-  String get value => _values[_value.index];
+  int get valueIndex => value.index;
+  String get textValue => _values[value.index];
 }
 
 enum HpConditionValue {
@@ -161,7 +161,10 @@ class HpCondition implements Enumeration {
   final bool deathOverride;
   final HpConditionValue condition;
 
-  HpCondition({this.maxHitPoints, this.hitPoints, this.deathOverride = false})
+  HpCondition(
+      {@required this.maxHitPoints,
+      @required this.hitPoints,
+      this.deathOverride = false})
       : condition =
             _calculateHpCondition(maxHitPoints, hitPoints, deathOverride);
 
@@ -179,29 +182,27 @@ class HpCondition implements Enumeration {
   List<String> get allValues => _values;
 
   @override
-  String get value => _values[condition.index];
+  String get textValue => _values[condition.index];
 
-  static HpConditionValue _calculateHpCondition(
-      int maxHitPoints, int hitPoints, bool deathOverride) {
-    if (deathOverride)
+  static HpConditionValue _calculateHpCondition(int max, int hp, bool death) {
+    if (death)
       return HpConditionValue.dead;
-    else if (_isReeling(hitPoints, maxHitPoints))
+    else if (_isReeling(hp, max))
       return HpConditionValue.reeling;
-    else if (_isHangingOn(hitPoints, maxHitPoints))
+    else if (_isHangingOn(hp, max))
       return HpConditionValue.hanging_on;
-    else if (_isRiskingDeath(hitPoints, maxHitPoints))
+    else if (_isRiskingDeath(hp, max))
       return HpConditionValue.risking_death;
-    else if (_isDead(hitPoints, maxHitPoints))
+    else if (_isDead(hp, max))
       return HpConditionValue.dead;
-    else if (_isDestroyed(hitPoints, maxHitPoints))
+    else if (_isDestroyed(hp, max))
       return HpConditionValue.destroyed;
     else
       return HpConditionValue.normal;
   }
 
-  static bool _isDestroyed(int hitPoints, int maxHitPoints) {
-    return hitPoints <= (-10 * maxHitPoints);
-  }
+  static bool _isDestroyed(int hitPoints, int maxHitPoints) =>
+      hitPoints <= (-10 * maxHitPoints);
 
   static bool _isDead(int hitPoints, int maxHitPoints) =>
       hitPoints <= -5 * maxHitPoints && hitPoints > -10 * maxHitPoints;
@@ -229,9 +230,9 @@ class FpCondition implements Enumeration {
 
   List<String> get allValues => _values;
   int get valueIndex => condition.index;
-  String get value => _values[condition.index];
+  String get textValue => _values[condition.index];
 
-  FpCondition.fromJSON(json)
+  FpCondition.fromJSON(Map<String, dynamic> json)
       : maxFatiguePoints = json[MAX] as int,
         fatiguePoints = json[FP] as int,
         condition = _calculateCondition(json[MAX] as int, json[FP] as int);
