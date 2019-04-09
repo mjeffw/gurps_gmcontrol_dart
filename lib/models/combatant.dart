@@ -43,7 +43,7 @@ class PrimaryAttributes {
   final int iq;
   final int ht;
 
-  PrimaryAttributes({this.st, this.dx, this.iq, this.ht});
+  PrimaryAttributes({this.st = 10, this.dx = 10, this.iq = 10, this.ht = 10});
 
   PrimaryAttributes.fromJSON(json)
       : st = json['ST'] as int,
@@ -77,17 +77,17 @@ class Posture implements Enumeration {
     'LIE FACE UP'
   ];
 
-  PostureValue _value;
+  PostureValue value;
 
-  Posture(this._value);
+  Posture({this.value = PostureValue.standing});
 
   Posture.fromJSON(json)
-      : _value = PostureValue.values.firstWhere(
-            (e) => e.toString().split('.')[1] == json['posture'] as String);
+      : value = PostureValue.values.firstWhere(
+            (e) => e.toString().split('.')[1] == json['value'] as String);
 
   List<String> get allValues => _postures;
-  int get valueIndex => _value.index;
-  String get textValue => _postures[_value.index];
+  int get valueIndex => value.index;
+  String get textValue => _postures[value.index];
 }
 
 enum ManeuverValue {

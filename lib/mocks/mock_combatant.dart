@@ -9,7 +9,7 @@ class MockCombatant {
         condition: Condition(
           fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: 3),
           hpCondition: HpCondition(maxHitPoints: 15, hitPoints: 15),
-          posture: Posture(PostureValue.crawling),
+          posture: Posture(value: PostureValue.crawling),
           stunned: true,
           maneuver: Maneuver(value: ManeuverValue.do_nothing),
         ),
@@ -21,7 +21,7 @@ class MockCombatant {
         condition: Condition(
           fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: -11),
           hpCondition: HpCondition(maxHitPoints: 12, hitPoints: -3),
-          posture: Posture(PostureValue.standing),
+          posture: Posture(value: PostureValue.standing),
           stunned: false,
           maneuver: Maneuver(value: ManeuverValue.aim),
         ),
@@ -33,7 +33,7 @@ class MockCombatant {
         condition: Condition(
           fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: -12),
           hpCondition: HpCondition(maxHitPoints: 12, hitPoints: 1),
-          posture: Posture(PostureValue.kneeling),
+          posture: Posture(value: PostureValue.kneeling),
           stunned: false,
           maneuver: Maneuver(value: ManeuverValue.move_and_attack),
         ),
