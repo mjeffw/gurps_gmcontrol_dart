@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'combatant_list.dart';
+import 'home.dart';
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: CombatantList());
+    return MaterialApp(home: Home());
   }
 }

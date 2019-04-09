@@ -9,8 +9,8 @@ class EnumeratedTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IndexedStack(
-      index: _enumeration.valueIndex(),
-      children: _enumeration.allValues().map((x) => Text(x)).toList(),
+      index: _enumeration.valueIndex,
+      children: _enumeration.allValues.map((x) => Text(x)).toList(),
     );
   }
 }

@@ -7,8 +7,8 @@ class MockCombatant {
         name: 'Grend Gnashtooth',
         speed: 6.75,
         condition: Condition(
-          fpCondition: FpCondition(FpConditionValue.normal),
-          hpCondition: HpCondition(HpConditionValue.normal),
+          fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: 3),
+          hpCondition: HpCondition(maxHitPoints: 15, hitPoints: 15),
           posture: Posture(PostureValue.crawling),
           stunned: true,
           maneuver: Maneuver(ManeuverValue.do_nothing),
@@ -19,8 +19,8 @@ class MockCombatant {
         name: 'Foe 1',
         speed: 7.0,
         condition: Condition(
-          fpCondition: FpCondition(FpConditionValue.near_collapse),
-          hpCondition: HpCondition(HpConditionValue.risking_death),
+          fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: -11),
+          hpCondition: HpCondition(maxHitPoints: 12, hitPoints: -3),
           posture: Posture(PostureValue.standing),
           stunned: false,
           maneuver: Maneuver(ManeuverValue.aim),
@@ -31,8 +31,8 @@ class MockCombatant {
         name: 'Findlay Silvermane',
         speed: 5.5,
         condition: Condition(
-          fpCondition: FpCondition(FpConditionValue.collapse),
-          hpCondition: HpCondition(HpConditionValue.reeling),
+          fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: -12),
+          hpCondition: HpCondition(maxHitPoints: 12, hitPoints: 1),
           posture: Posture(PostureValue.kneeling),
           stunned: false,
           maneuver: Maneuver(ManeuverValue.move_and_attack),
