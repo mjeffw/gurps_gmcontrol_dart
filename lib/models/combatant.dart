@@ -159,30 +159,29 @@ class HpCondition implements Enumeration {
   final int maxHitPoints;
   final int hitPoints;
   final bool deathOverride;
-  final HpConditionValue condition;
+  final HpConditionValue value;
 
   HpCondition(
       {@required this.maxHitPoints,
       @required this.hitPoints,
       this.deathOverride = false})
-      : condition =
-            _calculateHpCondition(maxHitPoints, hitPoints, deathOverride);
+      : value = _calculateHpCondition(maxHitPoints, hitPoints, deathOverride);
 
   HpCondition.fromJSON(json)
       : hitPoints = json[HP] as int,
         maxHitPoints = json[MAX] as int,
         deathOverride = json[DEAD] as bool,
-        condition = _calculateHpCondition(
+        value = _calculateHpCondition(
             json[MAX] as int, json[HP] as int, json[DEAD] as bool);
 
   @override
-  int get valueIndex => condition.index;
+  int get valueIndex => value.index;
 
   @override
   List<String> get allValues => _values;
 
   @override
-  String get textValue => _values[condition.index];
+  String get textValue => _values[value.index];
 
   static HpConditionValue _calculateHpCondition(int max, int hp, bool death) {
     if (death)
@@ -223,19 +222,19 @@ class FpCondition implements Enumeration {
 
   final int maxFatiguePoints;
   final int fatiguePoints;
-  final FpConditionValue condition;
+  final FpConditionValue value;
 
   FpCondition({@required this.maxFatiguePoints, @required this.fatiguePoints})
-      : condition = _calculateCondition(maxFatiguePoints, fatiguePoints);
+      : value = _calculateCondition(maxFatiguePoints, fatiguePoints);
 
   List<String> get allValues => _values;
-  int get valueIndex => condition.index;
-  String get textValue => _values[condition.index];
+  int get valueIndex => value.index;
+  String get textValue => _values[value.index];
 
   FpCondition.fromJSON(Map<String, dynamic> json)
       : maxFatiguePoints = json[MAX] as int,
         fatiguePoints = json[FP] as int,
-        condition = _calculateCondition(json[MAX] as int, json[FP] as int);
+        value = _calculateCondition(json[MAX] as int, json[FP] as int);
 
   static FpConditionValue _calculateCondition(int max, int fp) {
     if (_isVeryTired(fp, max))
