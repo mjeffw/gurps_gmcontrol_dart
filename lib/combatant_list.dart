@@ -26,7 +26,7 @@ class _CombatantListState extends State<CombatantList> {
     if (this.mounted) {
       setState(() => this._loading = true);
 
-      Timer(Duration(seconds: 3), () async {
+      Timer(Duration(seconds: 1), () async {
         final combatants = MockCombatant.fetchAll();
         combatants.sort((a, b) => b.speed.compareTo(a.speed));
 
