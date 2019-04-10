@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'models/combatant.dart';
-import 'combatant_widget.dart';
-import 'default_app_bar.dart';
-import 'mocks/mock_combatant.dart';
+import 'package:gurps_gmcontrol_dart/mocks/mock_combatant.dart';
+import 'package:gurps_gmcontrol_dart/models/combatant.dart';
+import 'package:gurps_gmcontrol_dart/widgets/combatant_widget.dart';
+import 'package:gurps_gmcontrol_dart/widgets/default_app_bar.dart';
 
 class CombatantList extends StatefulWidget {
   @override
@@ -41,7 +41,9 @@ class _CombatantListState extends State<CombatantList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBar(),
+      appBar: DefaultAppBar(
+        titleText: 'GMControl',
+      ),
       body: RefreshIndicator(
         onRefresh: loadData,
         child: Column(children: [

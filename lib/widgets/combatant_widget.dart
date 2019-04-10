@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gurps_gmcontrol_dart/models/combatant.dart';
 import 'package:gurps_gmcontrol_dart/styles.dart';
-import 'enumerated_text_widget.dart';
+import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_widget.dart';
 
 var _spacer = Container(width: 10);
 const stunnedIcon = '\uf567';

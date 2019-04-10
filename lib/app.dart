@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:gurps_gmcontrol_dart/views/home.dart';
 
 class App extends StatelessWidget {
   @override

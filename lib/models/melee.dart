@@ -1,10 +1,14 @@
 import 'combatant.dart';
 
 class Melee extends Object {
-  List<Combatant> combatants = [];
+  final int id;
+  final List<Combatant> combatants;
 
   Melee.fromJSON(Map<String, dynamic> json)
-      : combatants = (json['melee'] as List<dynamic>)
+      : id = json['id'],
+        combatants = (json['combatants'] as List<dynamic>)
             .map((item) => Combatant.fromJSON(item))
-            .toList();
+            .toList() {
+    combatants.sort((a, b) => b.speed.compareTo(a.speed));
+  }
 }

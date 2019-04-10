@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'combatant_list.dart';
-import 'blocs/melee_bloc.dart';
-import 'blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
+import 'package:gurps_gmcontrol_dart/views/melee.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -33,7 +33,7 @@ class Home extends StatelessWidget {
         .push(MaterialPageRoute(builder: (BuildContext context) {
       return BlocProvider<MeleeBloc>(
         bloc: MeleeBloc(),
-        child: CombatantList(),
+        child: MeleeView(),
       );
     }));
   }

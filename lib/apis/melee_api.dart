@@ -1,23 +1,21 @@
+import 'package:gurps_gmcontrol_dart/models/melee.dart';
 import 'dart:convert';
 
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
-import 'package:gurps_gmcontrol_dart/models/melee.dart';
+class MeleeApi {
+  Future<Melee> fetch({int index}) async {
+    // Give some additional delay to simulate slow network
+    await Future.delayed(const Duration(seconds: 1));
 
-class MockCombatant {
-  static List<Combatant> fetchAll() {
-    var parsedJson = json.decode(text);
-    var melee = Melee.fromJSON(parsedJson);
-    return melee.combatants;
-    // var list = parsedJson['melee'] as List;
-    // List<Combatant> combatants =
-    //     list.map((f) => Combatant.fromJSON(f)).toList();
-    // return combatants;
+    return Melee.fromJSON(json.decode(_text));
   }
 }
 
-var text = '''
+MeleeApi api = MeleeApi();
+
+var _text = '''
 {
-  "melee": [
+  "id" : 0,
+  "combatants": [
     {
       "name": "Grend Gnashtooth",
       "speed": 6.75,

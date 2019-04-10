@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'styles.dart';
+import 'package:gurps_gmcontrol_dart/styles.dart';
 
 class DefaultAppBar extends AppBar {
+  final String titleText;
+
+  DefaultAppBar({@required this.titleText})
+      : title = Text(titleText.toUpperCase(), style: Styles.navBarTitle);
+
   @override
-  final Widget title =
-      Text('GMControl'.toUpperCase(), style: Styles.navBarTitle);
+  final Widget title;
 
   @override
   final Color backgroundColor = Colors.black;
