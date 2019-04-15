@@ -4,8 +4,24 @@ import 'package:rxdart/rxdart.dart';
 
 import 'bloc_provider.dart';
 
+class MeleeCombatant {
+  final int meleeId;
+  final int id;
+  MeleeCombatant({this.meleeId, this.id});
+}
+
 class MeleeBloc implements BlocBase {
   // ##########  STREAMS  ##############
+
+  ///
+  /// Request the index of the Melee object to render. The index is checked to
+  /// see if it already exists; if it does not, it is fetched from the api.
+  ///
+  final _meleesBeingFetched = Set<int>();
+  var _meleeMap = <int, Melee>{};
+  PublishSubject<int> _idController = PublishSubject<int>();
+
+  Sink<int> get inMeleeId => _idController.sink;
 
   ///
   /// We are going to need the list of combatants to be displayed
@@ -15,13 +31,14 @@ class MeleeBloc implements BlocBase {
   Stream<Melee> get outMeleeList => _meleeController.stream;
 
   ///
-  /// Request the index of the Melee object to render. The index is checked to
-  /// see if it already exists; if it does not, it is fetched from the api.
+  /// In a given melee, some combatants may be displayed as 'expanded'.
   ///
-  final _meleesBeingFetched = Set<int>();
-  var _meleeMap = <int, Melee>{};
-  PublishSubject<int> _idController = PublishSubject<int>();
-  Sink<int> get inMeleeId => _idController.sink;
+  PublishSubject<MeleeCombatant> _selectedCombatantController =
+      PublishSubject<MeleeCombatant>();
+  Sink<MeleeCombatant> get inSelectedCombatants =>
+      _selectedCombatantController.sink;
+  Stream<MeleeCombatant> get outSelectedCombatants =>
+      _selectedCombatantController.stream;
 
   MeleeBloc() {
     _idController.stream
@@ -30,12 +47,18 @@ class MeleeBloc implements BlocBase {
         // and, do not update where this is no need
         .where((batch) => batch.isNotEmpty)
         .listen(_handleIndexes);
+
+    _selectedCombatantController.stream
+        .bufferTime(Duration(microseconds: 500))
+        .where((batch) => batch.isNotEmpty)
+        .listen(_handleSelection);
   }
 
   @override
   void dispose() {
     _meleeController.close();
     _idController.close();
+    _selectedCombatantController.close();
   }
 
   ///
@@ -44,7 +67,7 @@ class MeleeBloc implements BlocBase {
   ///
   void _handleIndexes(List<int> ids) {
     // Iterate all the requested indexes
-    ids.forEach((int id) {
+    ids.forEach((id) {
       print(id);
 
       // if not fetched, do that now
@@ -70,5 +93,17 @@ class MeleeBloc implements BlocBase {
     _meleesBeingFetched.remove(id);
     // notify
     _inMeleesList.add(melee);
+  }
+
+  void _handleSelection(List<MeleeCombatant> events) {
+    events.forEach((MeleeCombatant f) {
+      Melee melee = _meleeMap[f.meleeId];
+      if (melee != null) {
+        bool updated = melee.select(f.id);
+        if (updated) {
+          inSelectedCombatants.add(f);
+        }
+      }
+    });
   }
 }

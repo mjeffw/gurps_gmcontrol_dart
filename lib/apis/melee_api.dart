@@ -17,6 +17,7 @@ var _text = '''
   "id" : 0,
   "combatants": [
     {
+      "id" : 0,
       "name": "Grend Gnashtooth",
       "speed": 6.75,
       "condition": { "stunned": true, 
@@ -28,6 +29,7 @@ var _text = '''
       "primaryAttributes": { "ST": 13, "DX": 7, "IQ": 15, "HT": 9 }
     },
     {
+      "id" : 1,
       "name": "Peshkali",
       "speed": 7.0,
       "condition": { "stunned": false, 
@@ -39,6 +41,7 @@ var _text = '''
       "primaryAttributes": { "ST": 14, "DX": 9, "IQ": 8, "HT": 13 }
     },
     {
+      "id" : 2,
       "name": "Findlay Silvertongue",
       "speed": 5.5,
       "condition": { "stunned": false, 

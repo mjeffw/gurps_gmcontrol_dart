@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
 import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
@@ -8,39 +6,41 @@ import 'package:gurps_gmcontrol_dart/models/melee.dart';
 import 'package:gurps_gmcontrol_dart/widgets/combatant_widget.dart';
 import 'package:gurps_gmcontrol_dart/widgets/default_app_bar.dart';
 
+/// The app page that represents a single combat or melee. Initialized
+/// with the ID of the Melee model.
 class MeleeView extends StatelessWidget {
+  final int _id;
+  MeleeView(this._id);
+
   @override
   Widget build(BuildContext context) {
     final MeleeBloc meleeBloc = BlocProvider.of<MeleeBloc>(context);
-    var widget = Scaffold(
+
+    /// Ask the melee BLoC to add the melee object associated with this ID
+    meleeBloc.inMeleeId.add(_id);
+
+    return Scaffold(
       appBar: DefaultAppBar(titleText: 'GMCONTROL MELEE'),
-      body: Column(children: [
-        Expanded(child: _listView(context, meleeBloc)),
-      ]),
+      body: Column(children: [Expanded(child: _listView(context, meleeBloc))]),
     );
-
-    Timer(Duration(seconds: 3), () {
-      meleeBloc.inMeleeId.add(0);
-    });
-
-    return widget;
   }
 
   Widget _listView(BuildContext context, MeleeBloc meleeBloc) {
     return StreamBuilder<Melee>(
-        stream: meleeBloc.outMeleeList.where((t) => t.id == 0),
+        stream: meleeBloc.outMeleeList.where((t) => t.id == _id),
         builder: (BuildContext context, AsyncSnapshot<Melee> snapshot) {
-          return ListView.builder(
+          var builder = ListView.builder(
             itemBuilder: (BuildContext context, int index) {
-              return _buildCombatant(meleeBloc, index, snapshot.data);
+              return _buildCombatant(_id, index, snapshot.data);
             },
             itemCount:
                 snapshot.data == null ? 0 : snapshot.data.combatants.length,
           );
+          return builder;
         });
   }
 
-  Widget _buildCombatant(MeleeBloc bloc, int index, Melee data) {
+  Widget _buildCombatant(int meleeId, int index, Melee data) {
     final Combatant combatant = (data != null && data.combatants.length > index)
         ? data.combatants[index]
         : null;
@@ -48,6 +48,6 @@ class MeleeView extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
     }
 
-    return CombatantWidget(combatant, false);
+    return CombatantWidget(meleeId, combatant, false);
   }
 }

@@ -1,15 +1,18 @@
 import 'package:flutter/foundation.dart';
 
 class Combatant {
+  final int id;
   final String name;
   final double speed;
   final Condition condition;
   final PrimaryAttributes primaryAttrs;
 
-  Combatant({this.name, this.condition, this.speed, this.primaryAttrs});
+  Combatant(
+      {this.name, this.condition, this.speed, this.primaryAttrs, this.id});
 
   Combatant.fromJSON(Map<String, dynamic> json)
-      : name = json['name'] as String,
+      : id = json['id'] as int,
+        name = json['name'] as String,
         speed = json['speed'] as double,
         condition = Condition.fromJSON(json['condition']),
         primaryAttrs = PrimaryAttributes.fromJSON(json['primaryAttributes']);

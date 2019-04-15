@@ -1,39 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
 import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/views/melee.dart';
+import 'package:gurps_gmcontrol_dart/views/melee_view.dart';
+import 'package:gurps_gmcontrol_dart/widgets/default_app_bar.dart';
 
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GMCONTROL')),
+      appBar: DefaultAppBar(titleText: 'GMCONTROL'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             RaisedButton(
-              child: Text('Melee'),
-              onPressed: () {
-                _openPage(context);
-              },
-            ),
-            RaisedButton(
-              child: Text('Another Page'),
-              onPressed: () {},
-            ),
+                child: Text('Melee'), onPressed: () => _openMeleeView(context)),
+            RaisedButton(child: Text('Another Page'), onPressed: () {}),
           ],
         ),
       ),
     );
   }
 
-  void _openPage(BuildContext context) {
+  void _openMeleeView(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
       return BlocProvider<MeleeBloc>(
         bloc: MeleeBloc(),
-        child: MeleeView(),
+        child: MeleeView(0),
       );
     }));
   }
