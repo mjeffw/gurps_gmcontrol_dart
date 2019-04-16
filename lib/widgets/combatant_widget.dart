@@ -114,12 +114,12 @@ class CombatantWidget extends StatelessWidget {
   Widget _attributes() {
     return Row(
       children: <Widget>[
-        _primaryAttributes(),
+        _basicAttributes(),
       ],
     );
   }
 
-  Row _primaryAttributes() {
+  Row _basicAttributes() {
     return Row(
       children: <Widget>[
         Column(
@@ -129,10 +129,10 @@ class CombatantWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(_combatant.primaryAttrs.st.toString()),
-            Text(_combatant.primaryAttrs.dx.toString()),
-            Text(_combatant.primaryAttrs.iq.toString()),
-            Text(_combatant.primaryAttrs.ht.toString())
+            Text(_combatant.basicAttrs.st.toString()),
+            Text(_combatant.basicAttrs.dx.toString()),
+            Text(_combatant.basicAttrs.iq.toString()),
+            Text(_combatant.basicAttrs.ht.toString())
           ],
         )
       ],

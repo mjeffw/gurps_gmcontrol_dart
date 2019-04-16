@@ -1,23 +1,42 @@
 import 'package:flutter/foundation.dart';
 
+///
+/// Represents a single participant within a Melee.
+///
 class Combatant {
+  /// This uniquely identifies a Combatant instance.
   final int id;
+
   final String name;
   final double speed;
   final Condition condition;
-  final PrimaryAttributes primaryAttrs;
+  final BasicAttributes basicAttrs;
 
   Combatant(
-      {this.name, this.condition, this.speed, this.primaryAttrs, this.id});
+      {@required this.name,
+      @required this.condition,
+      @required this.speed,
+      @required this.basicAttrs,
+      @required this.id})
+      : assert(name != null),
+        assert(condition != null),
+        assert(speed != null),
+        assert(basicAttrs != null),
+        assert(id != null);
 
   Combatant.fromJSON(Map<String, dynamic> json)
-      : id = json['id'] as int,
-        name = json['name'] as String,
-        speed = json['speed'] as double,
-        condition = Condition.fromJSON(json['condition']),
-        primaryAttrs = PrimaryAttributes.fromJSON(json['primaryAttributes']);
+      : this(
+            id: json['id'] as int,
+            name: json['name'] as String,
+            speed: json['speed'] as double,
+            condition: Condition.fromJSON(json['condition']),
+            basicAttrs: BasicAttributes.fromJSON(json['basicAttributes']));
 }
 
+///
+/// Condition is an object that aggregates all the various conditions that
+/// matter during combat.
+///
 class Condition {
   final FpCondition fpCondition;
   final HpCondition hpCondition;
@@ -26,33 +45,58 @@ class Condition {
   final Maneuver maneuver;
 
   Condition(
-      {this.fpCondition,
-      this.hpCondition,
-      this.maneuver,
-      this.posture,
-      this.stunned});
+      {@required this.fpCondition,
+      @required this.hpCondition,
+      @required this.maneuver,
+      @required this.posture,
+      @required this.stunned})
+      : assert(fpCondition != null),
+        assert(hpCondition != null),
+        assert(maneuver != null),
+        assert(posture != null),
+        assert(stunned != null);
 
   Condition.fromJSON(json)
-      : fpCondition = FpCondition.fromJSON(json['fpCondition']),
-        hpCondition = HpCondition.fromJSON(json['hpCondition']),
-        stunned = json['stunned'] as bool,
-        posture = Posture.fromJSON(json['posture']),
-        maneuver = Maneuver.fromJSON(json['maneuver']);
+      : this(
+            fpCondition: FpCondition.fromJSON(json['fpCondition']),
+            hpCondition: HpCondition.fromJSON(json['hpCondition']),
+            stunned: json['stunned'] as bool,
+            posture: Posture.fromJSON(json['posture']),
+            maneuver: Maneuver.fromJSON(json['maneuver']));
 }
 
-class PrimaryAttributes {
+///
+/// Represents the basic attributes of the combatant. Four numbers called
+/// attributes define your basic abilities: Strength (ST), Dexterity (DX),
+/// Intelligence (IQ), and Health (HT).
+///
+class BasicAttributes {
+  /// Strength (ST) measures physical power and bulk.
   final int st;
+
+  /// Dexterity (DX) is a composite measure of agility, coordination, and fine
+  /// motor ability.
   final int dx;
+
+  /// Intelligence (IQ) is a broad measure of brainpower: creativity, cunning,
+  /// memory, reason, and so on.
   final int iq;
+
+  /// Health is a measure of energy and vitality.
   final int ht;
 
-  PrimaryAttributes({this.st = 10, this.dx = 10, this.iq = 10, this.ht = 10});
+  BasicAttributes({this.st = 10, this.dx = 10, this.iq = 10, this.ht = 10})
+      : assert(st != null),
+        assert(dx != null),
+        assert(iq != null),
+        assert(ht != null);
 
-  PrimaryAttributes.fromJSON(json)
-      : st = json['ST'] as int,
-        dx = json['DX'] as int,
-        iq = json['IQ'] as int,
-        ht = json['HT'] as int;
+  BasicAttributes.fromJSON(json)
+      : this(
+            st: json['ST'] as int,
+            dx: json['DX'] as int,
+            iq: json['IQ'] as int,
+            ht: json['HT'] as int);
 }
 
 enum PostureValue {
@@ -64,12 +108,25 @@ enum PostureValue {
   lie_face_up
 }
 
+///
+/// Mix-in class to represent an entity whose state can be identified as one of
+/// a limited number of String values.
+///
 abstract class Enumeration {
+  /// Returns all possible values.
   List<String> get allValues;
+
+  /// Returns the index of the current value in the list of all values.
   int get valueIndex;
+
+  /// Returns the current text value.
   String get textValue;
 }
 
+///
+/// Postures: standing, sitting, kneeling, crawling, lying prone (face down),
+/// and lying face up.
+///
 class Posture implements Enumeration {
   static const _postures = [
     'STANDING',
@@ -85,11 +142,17 @@ class Posture implements Enumeration {
   Posture({this.value = PostureValue.standing});
 
   Posture.fromJSON(json)
-      : value = PostureValue.values.firstWhere(
-            (e) => e.toString().split('.')[1] == json['value'] as String);
+      : this(
+            value: PostureValue.values.firstWhere(
+                (e) => e.toString().split('.')[1] == json['value'] as String));
 
+  @override
   List<String> get allValues => _postures;
+
+  @override
   int get valueIndex => value.index;
+
+  @override
   String get textValue => _postures[value.index];
 }
 
@@ -108,6 +171,10 @@ enum ManeuverValue {
   wait
 }
 
+///
+/// A maneuver is an action you can take on your turn. Each turn, you must
+/// choose one maneuver. Your choice determines what you can do that turn.
+///
 class Maneuver implements Enumeration {
   static const _values = <String>[
     'Do Nothing',
@@ -129,11 +196,17 @@ class Maneuver implements Enumeration {
   Maneuver({this.value = ManeuverValue.do_nothing});
 
   Maneuver.fromJSON(json)
-      : value = ManeuverValue.values.firstWhere(
-            (e) => e.toString().split('.')[1] == json['value'] as String);
+      : this(
+            value: ManeuverValue.values.firstWhere(
+                (e) => e.toString().split('.')[1] == json['value'] as String));
 
+  @override
   List<String> get allValues => _values;
+
+  @override
   int get valueIndex => value.index;
+
+  @override
   String get textValue => _values[value.index];
 }
 
@@ -146,8 +219,17 @@ enum HpConditionValue {
   destroyed
 }
 
+///
+/// HpCondition represents the combatant's health due to injury. It tracks two
+/// main values: the maximum hit points of the character, and the current
+/// amount of injury taken.
+///
+/// In addition, the deathOverride is used to mark the combatant as dead
+/// regardless of injury. This may come from magic or GM fiat or a failed HT
+/// check while in the Near Death condition, etc.
+///
 class HpCondition implements Enumeration {
-  static const DAMAGE = 'damage';
+  static const INJURY = 'injury';
   static const HP = 'HP';
   static const DEAD = 'dead';
   static const _values = <String>[
@@ -159,23 +241,32 @@ class HpCondition implements Enumeration {
     'Destroyed'
   ];
 
+  /// Hit Points represent your body’s ability to sustain injury.
   final int hitPoints;
-  final int damage;
+
+  /// Injury is any temporary loss of Hit Points.
+  final int injury;
+
+  /// Use to indicate that the combatant is dead, even if not in the
+  /// HpConditionValue.dead range of injury
   final bool deathOverride;
+
+  /// Effects of accumulated injury.
   final HpConditionValue value;
 
   HpCondition(
       {@required this.hitPoints,
-      @required this.damage,
+      @required this.injury,
       this.deathOverride = false})
-      : value = _calculateHpCondition(hitPoints, damage, deathOverride);
+      : value = _calculateHpCondition(hitPoints, injury, deathOverride),
+        assert(hitPoints != null),
+        assert(injury != null);
 
   HpCondition.fromJSON(json)
-      : damage = json[DAMAGE] as int,
-        hitPoints = json[HP] as int,
-        deathOverride = json[DEAD] as bool,
-        value = _calculateHpCondition(
-            json[HP] as int, json[DAMAGE] as int, json[DEAD] as bool);
+      : this(
+            hitPoints: json[HP] as int,
+            injury: json[INJURY] as int,
+            deathOverride: json[DEAD] as bool);
 
   @override
   int get valueIndex => value.index;
@@ -187,8 +278,8 @@ class HpCondition implements Enumeration {
   String get textValue => _values[value.index];
 
   static HpConditionValue _calculateHpCondition(
-      int max, int damage, bool death) {
-    var remaining = max - damage;
+      int max, int injury, bool death) {
+    var remaining = max - injury;
     if (death)
       return HpConditionValue.dead;
     else if (_isReeling(remaining, max))
@@ -228,26 +319,41 @@ class HpCondition implements Enumeration {
 
 enum FpConditionValue { normal, very_tired, near_collapse, collapse }
 
+///
+/// FpCondition represents the combatant's status as related to accumulated
+/// fatigue loss. There are two values tracked: the maximum FP and the
+/// combatant's current fatigue loss.
+///
 class FpCondition implements Enumeration {
   static const FP = 'FP';
   static const FATIGUE = 'fatigue';
   static const _values = ['Normal', 'Very Tired', 'Near Collapse', 'Collapse'];
 
+  /// Fatigue Points rate your body’s "energy supply."
   final int fatiguePoints;
-  final int fatigue;
+
+  /// Accumulated fatigue loss.
+  final int fatigueLoss;
+
+  /// Effects of accumulated fatigue loss.
   final FpConditionValue value;
 
-  FpCondition({@required this.fatiguePoints, @required this.fatigue})
-      : value = _calculateCondition(fatiguePoints, fatigue);
-
-  List<String> get allValues => _values;
-  int get valueIndex => value.index;
-  String get textValue => _values[value.index];
+  FpCondition({@required this.fatiguePoints, @required this.fatigueLoss})
+      : value = _calculateCondition(fatiguePoints, fatigueLoss),
+        assert(fatiguePoints != null),
+        assert(fatigueLoss != null);
 
   FpCondition.fromJSON(Map<String, dynamic> json)
-      : fatiguePoints = json[FP] as int,
-        fatigue = json[FATIGUE] as int,
-        value = _calculateCondition(json[FP] as int, json[FATIGUE] as int);
+      : this(fatiguePoints: json[FP] as int, fatigueLoss: json[FATIGUE] as int);
+
+  @override
+  List<String> get allValues => _values;
+
+  @override
+  int get valueIndex => value.index;
+
+  @override
+  String get textValue => _values[value.index];
 
   static FpConditionValue _calculateCondition(int max, int fatigue) {
     var remaining = max - fatigue;
