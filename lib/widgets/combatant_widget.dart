@@ -6,6 +6,7 @@ import 'package:gurps_gmcontrol_dart/styles.dart';
 import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_widget.dart';
 
 var _spacer = Container(width: 10);
+var _smallSpacer = Container(width: 4);
 const stunnedIcon = '\uf567';
 const normalIcon = '\uf118';
 
@@ -25,14 +26,16 @@ class CombatantWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final MeleeBloc meleeBloc = BlocProvider.of<MeleeBloc>(context);
 
-    var widget = StreamBuilder<MeleeCombatant>(
-      stream: meleeBloc.outSelectedCombatants
-          .where((t) => t.id == _combatant.id && t.meleeId == _meleeId),
-      builder: (BuildContext context, AsyncSnapshot<MeleeCombatant> snapshot) {
+    var widget = StreamBuilder<MeleeCombatantSelection>(
+      stream: meleeBloc.outSelectedCombatants.where((t) =>
+          t.combatantId.id == _combatant.id &&
+          t.combatantId.meleeId == _meleeId),
+      builder: (BuildContext context,
+          AsyncSnapshot<MeleeCombatantSelection> snapshot) {
         return Container(
           padding: EdgeInsets.all(8.0),
-          child: _mainWidget(meleeBloc.inSelectedCombatants,
-              snapshot.data != null && snapshot.data.id == _combatant.id),
+          child: _mainWidget(meleeBloc.inSelectedId,
+              snapshot.data != null && snapshot.data.selected),
         );
       },
     );
@@ -42,7 +45,16 @@ class CombatantWidget extends StatelessWidget {
 
   Widget _mainWidget(Sink<MeleeCombatant> inSelectedCombatants, bool expanded) {
     if (expanded) {
-      return Column(children: <Widget>[_headerRow(inSelectedCombatants)]);
+      return Container(
+          color: Colors.amber,
+          child: Column(
+            children: <Widget>[
+              _headerRow(inSelectedCombatants),
+              Row(
+                children: <Widget>[_attributes()],
+              )
+            ],
+          ));
     } else {
       return _headerRow(inSelectedCombatants);
     }
@@ -53,19 +65,18 @@ class CombatantWidget extends StatelessWidget {
       children: <Widget>[
         _gripWidget(),
         _spacer,
-        GestureDetector(
-          onTap: () {
-            inSelectedCombatants
-                .add(MeleeCombatant(id: _combatant.id, meleeId: _meleeId));
-          },
-          child: Text(
-            _combatant.speed.toStringAsFixed(2),
-          ),
-        ),
+        Text(_combatant.speed.toStringAsFixed(2)),
         _spacer,
         Expanded(
+          child: GestureDetector(
+            onTap: () {
+              inSelectedCombatants
+                  .add(MeleeCombatant(id: _combatant.id, meleeId: _meleeId));
+            },
             child:
-                Text(_combatant.name, style: Styles.nameTextStyle(_expanded))),
+                Text(_combatant.name, style: Styles.nameTextStyle(_expanded)),
+          ),
+        ),
         _spacer,
         EnumeratedTextWidget(_combatant.condition.posture),
         _spacer,
@@ -98,5 +109,25 @@ class CombatantWidget extends StatelessWidget {
     );
 
     return Text(stunned ? stunnedIcon : normalIcon, style: textStyle);
+  }
+
+  Widget _attributes() {
+    return Row(
+      children: <Widget>[
+        Column(
+          children: <Widget>[Text('ST'), Text('DX'), Text('IQ'), Text('HT')],
+        ),
+        _smallSpacer,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text(_combatant.primaryAttrs.st.toString()),
+            Text(_combatant.primaryAttrs.dx.toString()),
+            Text(_combatant.primaryAttrs.iq.toString()),
+            Text(_combatant.primaryAttrs.ht.toString())
+          ],
+        )
+      ],
+    );
   }
 }

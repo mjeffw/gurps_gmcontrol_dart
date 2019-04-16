@@ -10,6 +10,12 @@ class MeleeCombatant {
   MeleeCombatant({this.meleeId, this.id});
 }
 
+class MeleeCombatantSelection {
+  final bool selected;
+  final MeleeCombatant combatantId;
+  MeleeCombatantSelection({this.combatantId, this.selected});
+}
+
 class MeleeBloc implements BlocBase {
   // ##########  STREAMS  ##############
 
@@ -19,8 +25,8 @@ class MeleeBloc implements BlocBase {
   ///
   final _meleesBeingFetched = Set<int>();
   var _meleeMap = <int, Melee>{};
-  PublishSubject<int> _idController = PublishSubject<int>();
 
+  PublishSubject<int> _idController = PublishSubject<int>();
   Sink<int> get inMeleeId => _idController.sink;
 
   ///
@@ -33,12 +39,14 @@ class MeleeBloc implements BlocBase {
   ///
   /// In a given melee, some combatants may be displayed as 'expanded'.
   ///
-  PublishSubject<MeleeCombatant> _selectedCombatantController =
-      PublishSubject<MeleeCombatant>();
-  Sink<MeleeCombatant> get inSelectedCombatants =>
-      _selectedCombatantController.sink;
-  Stream<MeleeCombatant> get outSelectedCombatants =>
-      _selectedCombatantController.stream;
+  var _selectedIdController = PublishSubject<MeleeCombatant>();
+  Sink<MeleeCombatant> get inSelectedId => _selectedIdController.sink;
+
+  var _selectedController = PublishSubject<MeleeCombatantSelection>();
+  Sink<MeleeCombatantSelection> get _inSelectedCombatants =>
+      _selectedController.sink;
+  Stream<MeleeCombatantSelection> get outSelectedCombatants =>
+      _selectedController.stream;
 
   MeleeBloc() {
     _idController.stream
@@ -48,7 +56,7 @@ class MeleeBloc implements BlocBase {
         .where((batch) => batch.isNotEmpty)
         .listen(_handleIndexes);
 
-    _selectedCombatantController.stream
+    _selectedIdController.stream
         .bufferTime(Duration(microseconds: 500))
         .where((batch) => batch.isNotEmpty)
         .listen(_handleSelection);
@@ -58,7 +66,8 @@ class MeleeBloc implements BlocBase {
   void dispose() {
     _meleeController.close();
     _idController.close();
-    _selectedCombatantController.close();
+    _selectedController.close();
+    _selectedIdController.close();
   }
 
   ///
@@ -101,7 +110,10 @@ class MeleeBloc implements BlocBase {
       if (melee != null) {
         bool updated = melee.select(f.id);
         if (updated) {
-          inSelectedCombatants.add(f);
+          melee.combatants.forEach((it) => _inSelectedCombatants.add(
+              MeleeCombatantSelection(
+                  combatantId: MeleeCombatant(meleeId: melee.id, id: it.id),
+                  selected: melee.selected.contains(it))));
         }
       }
     });
