@@ -8,19 +8,19 @@ class Combatant {
   final int id;
 
   final String name;
-  final double speed;
   final Condition condition;
   final BasicAttributes basicAttrs;
+  final SecondaryAttributes secondaryAttrs;
 
   Combatant(
       {@required this.name,
       @required this.condition,
-      @required this.speed,
       @required this.basicAttrs,
+      @required this.secondaryAttrs,
       @required this.id})
       : assert(name != null),
         assert(condition != null),
-        assert(speed != null),
+        assert(secondaryAttrs != null),
         assert(basicAttrs != null),
         assert(id != null);
 
@@ -28,9 +28,12 @@ class Combatant {
       : this(
             id: json['id'] as int,
             name: json['name'] as String,
-            speed: json['speed'] as double,
             condition: Condition.fromJSON(json['condition']),
-            basicAttrs: BasicAttributes.fromJSON(json['basicAttributes']));
+            basicAttrs: BasicAttributes.fromJSON(json['basicAttributes']),
+            secondaryAttrs:
+                SecondaryAttributes.fromJSON(json['secondaryAttributes']));
+
+  double get speed => secondaryAttrs.speed;
 }
 
 ///
@@ -97,6 +100,26 @@ class BasicAttributes {
             dx: json['DX'] as int,
             iq: json['IQ'] as int,
             ht: json['HT'] as int);
+}
+
+class SecondaryAttributes {
+  final int move;
+  final int per;
+  final double speed;
+  final int will;
+
+  SecondaryAttributes({this.speed, this.per, this.will, this.move})
+      : assert(move != null),
+        assert(speed != null),
+        assert(will != null),
+        assert(per != null);
+
+  SecondaryAttributes.fromJSON(Map<String, dynamic> json)
+      : this(
+            move: json['move'] as int,
+            per: json['per'] as int,
+            will: json['will'] as int,
+            speed: json['speed'] as double);
 }
 
 enum PostureValue {

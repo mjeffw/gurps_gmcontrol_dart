@@ -608,7 +608,8 @@ void main() {
             stunned: false),
         name: 'Grend',
         basicAttrs: BasicAttributes(dx: 11, iq: 12, ht: 13),
-        speed: 5.5,
+        secondaryAttrs:
+            SecondaryAttributes(move: 6, per: 12, will: 15, speed: 5.5),
       );
 
       expect(c.condition.fpCondition.value, FpConditionValue.very_tired);
@@ -620,6 +621,10 @@ void main() {
       expect(c.basicAttrs.dx, 11);
       expect(c.basicAttrs.iq, 12);
       expect(c.basicAttrs.ht, 13);
+      expect(c.secondaryAttrs.move, 6);
+      expect(c.secondaryAttrs.speed, 5.5);
+      expect(c.secondaryAttrs.per, 12);
+      expect(c.secondaryAttrs.will, 15);
       expect(c.name, 'Grend');
       expect(c.speed, 5.5);
     });
@@ -629,7 +634,6 @@ void main() {
       {
         "id": 1,
         "name": "Bobbie",
-        "speed": 6.75,
         "condition": {
           "stunned": true,
           "fpCondition": {
@@ -646,6 +650,9 @@ void main() {
         },
         "basicAttributes": {
           "ST": 13, "DX": 7, "IQ": 15, "HT": 9
+        },
+        "secondaryAttributes": {
+          "per": 12, "will": 15, "move": 6, "speed": 5.5
         }
       }
       ''';
@@ -660,8 +667,12 @@ void main() {
       expect(c.basicAttrs.dx, 7);
       expect(c.basicAttrs.iq, 15);
       expect(c.basicAttrs.ht, 9);
+      expect(c.secondaryAttrs.move, 6);
+      expect(c.secondaryAttrs.speed, 5.5);
+      expect(c.secondaryAttrs.per, 12);
+      expect(c.secondaryAttrs.will, 15);
       expect(c.name, 'Bobbie');
-      expect(c.speed, 6.75);
+      expect(c.speed, 5.5);
     });
   });
 }
