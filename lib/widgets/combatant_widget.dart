@@ -114,6 +114,14 @@ class CombatantWidget extends StatelessWidget {
   Widget _attributes() {
     return Row(
       children: <Widget>[
+        _primaryAttributes(),
+      ],
+    );
+  }
+
+  Row _primaryAttributes() {
+    return Row(
+      children: <Widget>[
         Column(
           children: <Widget>[Text('ST'), Text('DX'), Text('IQ'), Text('HT')],
         ),

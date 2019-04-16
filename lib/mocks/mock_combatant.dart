@@ -22,7 +22,7 @@ var text = '''
       "name": "Grend Gnashtooth",
       "speed": 6.75,
       "condition": { "stunned": true, 
-        "fpCondition": { "maxFP" : 12, "FP" : 3},
+        "fpCondition": { "FP" : 12, "fatigue" : 9},
         "hpCondition": { "maxHP": 15, "HP": 15, "dead": false },
         "maneuver": { "value": "do_nothing"  },
         "posture": { "value": "crawling" }
@@ -33,7 +33,7 @@ var text = '''
       "name": "Peshkali",
       "speed": 7.0,
       "condition": { "stunned": false, 
-        "fpCondition": { "maxFP" : 12, "FP" : -11},
+        "fpCondition": { "FP" : 12, "fatigue" : 23},
         "hpCondition": { "maxHP": 12, "HP": -3, "dead": false },
         "maneuver": { "value": "aim"  },
         "posture": { "value": "standing" }
@@ -44,7 +44,7 @@ var text = '''
       "name": "Findlay Silvertongue",
       "speed": 5.5,
       "condition": { "stunned": false, 
-        "fpCondition": { "maxFP" : 12, "FP" : -12},
+        "fpCondition": { "FP" : 12, "fatigue" : -24},
         "hpCondition": { "maxHP": 12, "HP": 1, "dead": false },
         "maneuver": { "value": "move_and_attack"  },
         "posture": { "value": "kneeling" }

@@ -141,41 +141,41 @@ enum HpConditionValue {
   normal,
   reeling,
   hanging_on,
-  risking_death,
+  near_death,
   dead,
   destroyed
 }
 
 class HpCondition implements Enumeration {
+  static const DAMAGE = 'damage';
   static const HP = 'HP';
-  static const MAX = 'maxHP';
   static const DEAD = 'dead';
   static const _values = <String>[
     'Normal',
     'Reeling',
     'Hanging On',
-    'Risk Death',
+    'Near Death',
     'Dead',
     'Destroyed'
   ];
 
-  final int maxHitPoints;
   final int hitPoints;
+  final int damage;
   final bool deathOverride;
   final HpConditionValue value;
 
   HpCondition(
-      {@required this.maxHitPoints,
-      @required this.hitPoints,
+      {@required this.hitPoints,
+      @required this.damage,
       this.deathOverride = false})
-      : value = _calculateHpCondition(maxHitPoints, hitPoints, deathOverride);
+      : value = _calculateHpCondition(hitPoints, damage, deathOverride);
 
   HpCondition.fromJSON(json)
-      : hitPoints = json[HP] as int,
-        maxHitPoints = json[MAX] as int,
+      : damage = json[DAMAGE] as int,
+        hitPoints = json[HP] as int,
         deathOverride = json[DEAD] as bool,
         value = _calculateHpCondition(
-            json[MAX] as int, json[HP] as int, json[DEAD] as bool);
+            json[HP] as int, json[DAMAGE] as int, json[DEAD] as bool);
 
   @override
   int get valueIndex => value.index;
@@ -186,71 +186,89 @@ class HpCondition implements Enumeration {
   @override
   String get textValue => _values[value.index];
 
-  static HpConditionValue _calculateHpCondition(int max, int hp, bool death) {
+  static HpConditionValue _calculateHpCondition(
+      int max, int damage, bool death) {
+    var remaining = max - damage;
     if (death)
       return HpConditionValue.dead;
-    else if (_isReeling(hp, max))
+    else if (_isReeling(remaining, max))
       return HpConditionValue.reeling;
-    else if (_isHangingOn(hp, max))
+    else if (_isHangingOn(remaining, max))
       return HpConditionValue.hanging_on;
-    else if (_isRiskingDeath(hp, max))
-      return HpConditionValue.risking_death;
-    else if (_isDead(hp, max))
+    else if (_isRiskingDeath(remaining, max))
+      return HpConditionValue.near_death;
+    else if (_isDead(remaining, max))
       return HpConditionValue.dead;
-    else if (_isDestroyed(hp, max))
+    else if (_isDestroyed(remaining, max))
       return HpConditionValue.destroyed;
     else
       return HpConditionValue.normal;
   }
 
-  static bool _isDestroyed(int hitPoints, int maxHitPoints) =>
-      hitPoints <= (-10 * maxHitPoints);
+  /// Less than 1/3 of your HP left: Reeling
+  static bool _isReeling(int remaining, int maxHitPoints) =>
+      remaining <= maxHitPoints / 3.0 && remaining > 0;
 
-  static bool _isDead(int hitPoints, int maxHitPoints) =>
-      hitPoints <= -5 * maxHitPoints && hitPoints > -10 * maxHitPoints;
-  static bool _isRiskingDeath(int hitPoints, int maxHitPoints) =>
-      hitPoints <= -1 * maxHitPoints && hitPoints > -5 * maxHitPoints;
-  static bool _isHangingOn(int hitPoints, int maxHitPoints) =>
-      hitPoints <= 0 && hitPoints > -1 * maxHitPoints;
-  static bool _isReeling(int hitPoints, int maxHitPoints) =>
-      hitPoints <= maxHitPoints / 3.0 && hitPoints > 0;
+  /// 0 HP or less: Hanging on
+  static bool _isHangingOn(int remaining, int maxHitPoints) =>
+      remaining <= 0 && remaining > -1 * maxHitPoints;
+
+  /// -1 x HP: Near death
+  static bool _isRiskingDeath(int remaining, int maxHitPoints) =>
+      remaining <= -1 * maxHitPoints && remaining > -5 * maxHitPoints;
+
+  /// -5 x HP: Dead
+  static bool _isDead(int remaining, int maxHitPoints) =>
+      remaining <= -5 * maxHitPoints && remaining > -10 * maxHitPoints;
+
+  /// -10 x HP: Destroyed
+  static bool _isDestroyed(int remaining, int maxHitPoints) =>
+      remaining <= (-10 * maxHitPoints);
 }
 
 enum FpConditionValue { normal, very_tired, near_collapse, collapse }
 
 class FpCondition implements Enumeration {
-  static const MAX = 'maxFP';
   static const FP = 'FP';
+  static const FATIGUE = 'fatigue';
   static const _values = ['Normal', 'Very Tired', 'Near Collapse', 'Collapse'];
 
-  final int maxFatiguePoints;
   final int fatiguePoints;
+  final int fatigue;
   final FpConditionValue value;
 
-  FpCondition({@required this.maxFatiguePoints, @required this.fatiguePoints})
-      : value = _calculateCondition(maxFatiguePoints, fatiguePoints);
+  FpCondition({@required this.fatiguePoints, @required this.fatigue})
+      : value = _calculateCondition(fatiguePoints, fatigue);
 
   List<String> get allValues => _values;
   int get valueIndex => value.index;
   String get textValue => _values[value.index];
 
   FpCondition.fromJSON(Map<String, dynamic> json)
-      : maxFatiguePoints = json[MAX] as int,
-        fatiguePoints = json[FP] as int,
-        value = _calculateCondition(json[MAX] as int, json[FP] as int);
+      : fatiguePoints = json[FP] as int,
+        fatigue = json[FATIGUE] as int,
+        value = _calculateCondition(json[FP] as int, json[FATIGUE] as int);
 
-  static FpConditionValue _calculateCondition(int max, int fp) {
-    if (_isVeryTired(fp, max))
+  static FpConditionValue _calculateCondition(int max, int fatigue) {
+    var remaining = max - fatigue;
+    if (_isVeryTired(remaining, max))
       return FpConditionValue.very_tired;
-    else if (_isNearCollapse(fp, max))
+    else if (_isNearCollapse(remaining, max))
       return FpConditionValue.near_collapse;
-    else if (_isCollapsed(fp, max))
+    else if (_isCollapsed(remaining, max))
       return FpConditionValue.collapse;
     else
       return FpConditionValue.normal;
   }
 
-  static bool _isCollapsed(int fp, int max) => fp <= (-1 * max);
-  static bool _isNearCollapse(int fp, int max) => fp <= 0 && fp > (-1 * max);
-  static bool _isVeryTired(int fp, int max) => fp < (max / 3.0) && fp > 0;
+  /// Less than 1/3 of your FP left: Very Tired.
+  static bool _isVeryTired(int remaining, int max) =>
+      remaining < (max / 3.0) && remaining > 0;
+
+  /// 0 FP or less: Near Collapse
+  static bool _isNearCollapse(int remaining, int max) =>
+      remaining <= 0 && remaining > (-1 * max);
+
+  /// -1 x FP or less: Collapse
+  static bool _isCollapsed(int remaining, int max) => remaining <= (-1 * max);
 }

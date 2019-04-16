@@ -5,28 +5,28 @@ import 'dart:convert';
 void main() {
   group('FpCondition', () {
     test('all values', () {
-      final fp = FpCondition(maxFatiguePoints: 20, fatiguePoints: 7);
+      final fp = FpCondition(fatiguePoints: 20, fatigue: 7);
 
       expect(fp.allValues,
           <String>['Normal', 'Very Tired', 'Near Collapse', 'Collapse']);
     });
 
     test('Normal', () {
-      final fp = FpCondition(maxFatiguePoints: 20, fatiguePoints: 20);
+      final fp = FpCondition(fatiguePoints: 20, fatigue: 0);
       expect(fp.value, FpConditionValue.normal);
       expect(fp.textValue, 'Normal');
       expect(fp.valueIndex, 0);
     });
     test('Very tired', () {
-      final fp = FpCondition(maxFatiguePoints: 18, fatiguePoints: 5);
+      final fp = FpCondition(fatiguePoints: 18, fatigue: 13);
       expect(fp.value, FpConditionValue.very_tired);
     });
     test('Near collapse', () {
-      final fp = FpCondition(maxFatiguePoints: 18, fatiguePoints: 0);
+      final fp = FpCondition(fatiguePoints: 18, fatigue: 18);
       expect(fp.value, FpConditionValue.near_collapse);
     });
     test('Collapsed', () {
-      final fp = FpCondition(maxFatiguePoints: 18, fatiguePoints: -18);
+      final fp = FpCondition(fatiguePoints: 18, fatigue: 36);
       expect(fp.value, FpConditionValue.collapse);
     });
 
@@ -34,42 +34,42 @@ void main() {
       test('normal', () {
         var text = '''
       {
-        "maxFP" : 18,
-        "FP" : 6
+        "FP" : 18,
+        "fatigue" : 6
       }
       ''';
 
         final fp = FpCondition.fromJSON(json.decode(text));
-        expect(fp.maxFatiguePoints, 18);
-        expect(fp.fatiguePoints, 6);
+        expect(fp.fatiguePoints, 18);
+        expect(fp.fatigue, 6);
         expect(fp.value, FpConditionValue.normal);
       });
 
       test('very tired', () {
         var text = '''
       {
-        "maxFP" : 18,
-        "FP" : 1
+        "FP" : 18,
+        "fatigue" : 17
       }
       ''';
 
         final fp = FpCondition.fromJSON(json.decode(text));
-        expect(fp.maxFatiguePoints, 18);
-        expect(fp.fatiguePoints, 1);
+        expect(fp.fatiguePoints, 18);
+        expect(fp.fatigue, 17);
         expect(fp.value, FpConditionValue.very_tired);
       });
 
       test('near collapse', () {
         var text = '''
       {
-        "maxFP" : 18,
-        "FP" : -17
+        "FP" : 18,
+        "fatigue" : 35
       }
       ''';
 
         final fp = FpCondition.fromJSON(json.decode(text));
-        expect(fp.maxFatiguePoints, 18);
-        expect(fp.fatiguePoints, -17);
+        expect(fp.fatiguePoints, 18);
+        expect(fp.fatigue, 35);
         expect(fp.value, FpConditionValue.near_collapse);
       });
     });
@@ -77,64 +77,64 @@ void main() {
 
   group('HpCondition', () {
     test('all values', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: 10);
+      var hp = HpCondition(hitPoints: 10, damage: 0);
       expect(hp.value, HpConditionValue.normal);
       expect(hp.deathOverride, false);
+      expect(hp.damage, 0);
       expect(hp.hitPoints, 10);
-      expect(hp.maxHitPoints, 10);
       expect(hp.textValue, 'Normal');
       expect(hp.valueIndex, 0);
       expect(hp.allValues, [
         'Normal',
         'Reeling',
         'Hanging On',
-        'Risk Death',
+        'Near Death',
         'Dead',
         'Destroyed'
       ]);
     });
 
     test('Normal lower bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: 4);
+      var hp = HpCondition(hitPoints: 10, damage: 6);
       expect(hp.value, HpConditionValue.normal);
-      expect(hp.hitPoints, 4);
+      expect(hp.damage, 6);
       expect(hp.textValue, 'Normal');
       expect(hp.valueIndex, 0);
     });
 
     test('Reeling upper bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: 3);
+      var hp = HpCondition(hitPoints: 10, damage: 7);
       expect(hp.value, HpConditionValue.reeling);
-      expect(hp.hitPoints, 3);
+      expect(hp.damage, 7);
       expect(hp.textValue, 'Reeling');
       expect(hp.valueIndex, 1);
     });
 
     test('Hanging On upper bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: 0);
+      var hp = HpCondition(hitPoints: 10, damage: 10);
       expect(hp.value, HpConditionValue.hanging_on);
-      expect(hp.hitPoints, 0);
+      expect(hp.damage, 10);
       expect(hp.textValue, 'Hanging On');
       expect(hp.valueIndex, 2);
     });
 
     test('Risk Death upper bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: -10);
-      expect(hp.value, HpConditionValue.risking_death);
-      expect(hp.hitPoints, -10);
-      expect(hp.textValue, 'Risk Death');
+      var hp = HpCondition(hitPoints: 10, damage: 20);
+      expect(hp.value, HpConditionValue.near_death);
+      expect(hp.damage, 20);
+      expect(hp.textValue, 'Near Death');
       expect(hp.valueIndex, 3);
     });
 
     test('Dead upper bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: -50);
+      var hp = HpCondition(hitPoints: 10, damage: 60);
       expect(hp.value, HpConditionValue.dead);
       expect(hp.textValue, 'Dead');
       expect(hp.valueIndex, 4);
     });
 
     test('Destroyed upper bound', () {
-      var hp = HpCondition(maxHitPoints: 10, hitPoints: -100);
+      var hp = HpCondition(hitPoints: 10, damage: 110);
       expect(hp.value, HpConditionValue.destroyed);
       expect(hp.textValue, 'Destroyed');
       expect(hp.valueIndex, 5);
@@ -144,74 +144,74 @@ void main() {
       test('reeling lower bound', () {
         var text = '''
         {
-          "maxHP": 10,
-          "HP": 1,
+          "HP": 10,
+          "damage": 9,
           "dead": false
         }
         ''';
 
         final hp = HpCondition.fromJSON(json.decode(text));
         expect(hp.value, HpConditionValue.reeling);
-        expect(hp.maxHitPoints, 10);
-        expect(hp.hitPoints, 1);
+        expect(hp.hitPoints, 10);
+        expect(hp.damage, 9);
         expect(hp.deathOverride, false);
       });
       test('hanging on lower bound', () {
         var text = '''
         {
-          "maxHP": 10,
-          "HP": -9,
+          "HP": 10,
+          "damage": 19,
           "dead": false
         }
         ''';
 
         final hp = HpCondition.fromJSON(json.decode(text));
         expect(hp.value, HpConditionValue.hanging_on);
-        expect(hp.maxHitPoints, 10);
-        expect(hp.hitPoints, -9);
+        expect(hp.hitPoints, 10);
+        expect(hp.damage, 19);
         expect(hp.deathOverride, false);
       });
       test('risking death lower bound', () {
         var text = '''
         {
-          "maxHP": 10,
-          "HP": -49,
+          "HP": 10,
+          "damage": 59,
           "dead": false
         }
         ''';
 
         final hp = HpCondition.fromJSON(json.decode(text));
-        expect(hp.value, HpConditionValue.risking_death);
-        expect(hp.maxHitPoints, 10);
-        expect(hp.hitPoints, -49);
+        expect(hp.value, HpConditionValue.near_death);
+        expect(hp.hitPoints, 10);
+        expect(hp.damage, 59);
       });
       test('dead lower bound', () {
         var text = '''
         {
-          "maxHP": 10,
-          "HP": -99,
+          "HP": 10,
+          "damage": 109,
           "dead": false
         }
         ''';
 
         final hp = HpCondition.fromJSON(json.decode(text));
         expect(hp.value, HpConditionValue.dead);
-        expect(hp.maxHitPoints, 10);
-        expect(hp.hitPoints, -99);
+        expect(hp.hitPoints, 10);
+        expect(hp.damage, 109);
       });
       test('dead/reeling', () {
         var text = '''
         {
-          "maxHP": 10,
-          "HP": 1,
+          "HP": 10,
+          "damage": 9,
           "dead": true
         }
         ''';
 
         final hp = HpCondition.fromJSON(json.decode(text));
         expect(hp.value, HpConditionValue.dead);
-        expect(hp.maxHitPoints, 10);
-        expect(hp.hitPoints, 1);
+        expect(hp.hitPoints, 10);
+        expect(hp.damage, 9);
         expect(hp.deathOverride, true);
       });
     });
@@ -556,8 +556,8 @@ void main() {
   group('Condition', () {
     test('constructors', () {
       var c = Condition(
-          fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: 2),
-          hpCondition: HpCondition(maxHitPoints: 15, hitPoints: -3),
+          fpCondition: FpCondition(fatiguePoints: 12, fatigue: 10),
+          hpCondition: HpCondition(hitPoints: 15, damage: 18),
           maneuver: Maneuver(value: ManeuverValue.move_and_attack),
           posture: Posture(value: PostureValue.crawling),
           stunned: false);
@@ -574,12 +574,12 @@ void main() {
       {
         "stunned": true,
         "fpCondition": {
-          "maxFP" : 18,
-          "FP" : -17
+          "FP" : 18,
+          "fatigue" : 35
         },
         "hpCondition" : {
-          "maxHP": 10,
-          "HP": 1,
+          "HP": 10,
+          "damage": 9,
           "dead": true
         },
         "maneuver": { "value": "do_nothing"  },
@@ -600,8 +600,8 @@ void main() {
     test('constructor', () {
       var c = Combatant(
         condition: Condition(
-            fpCondition: FpCondition(maxFatiguePoints: 12, fatiguePoints: 2),
-            hpCondition: HpCondition(maxHitPoints: 15, hitPoints: -3),
+            fpCondition: FpCondition(fatiguePoints: 12, fatigue: 10),
+            hpCondition: HpCondition(hitPoints: 15, damage: 18),
             maneuver: Maneuver(value: ManeuverValue.move_and_attack),
             posture: Posture(value: PostureValue.crawling),
             stunned: false),
@@ -631,12 +631,12 @@ void main() {
         "condition": {
           "stunned": true,
           "fpCondition": {
-            "maxFP" : 18,
-            "FP" : -17
+            "FP" : 18,
+            "fatigue" : 35
           },
           "hpCondition" : {
-            "maxHP": 10,
-            "HP": 1,
+            "HP": 10,
+            "damage": 9,
             "dead": false
           },
           "maneuver": { "value": "do_nothing"  },
