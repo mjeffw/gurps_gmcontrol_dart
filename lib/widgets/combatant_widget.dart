@@ -51,7 +51,11 @@ class CombatantWidget extends StatelessWidget {
             children: <Widget>[
               _headerRow(inSelectedCombatants),
               Row(
-                children: <Widget>[_attributes()],
+                children: <Widget>[
+                  _basicAttributes(),
+                  _spacer,
+                  _secondaryAttributes(),
+                ],
               )
             ],
           ));
@@ -64,8 +68,6 @@ class CombatantWidget extends StatelessWidget {
     return Row(
       children: <Widget>[
         _gripWidget(),
-        _spacer,
-        Text(_combatant.speed.toStringAsFixed(2)),
         _spacer,
         Expanded(
           child: GestureDetector(
@@ -111,30 +113,43 @@ class CombatantWidget extends StatelessWidget {
     return Text(stunned ? stunnedIcon : normalIcon, style: textStyle);
   }
 
-  Widget _attributes() {
-    return Row(
+  Widget _basicAttributes() {
+    var table = Table(
+      defaultColumnWidth: IntrinsicColumnWidth(),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: <TableRow>[
+        _tableRow('ST', _combatant.basicAttrs.st.toString()),
+        _tableRow('DX', _combatant.basicAttrs.dx.toString()),
+        _tableRow('IQ', _combatant.basicAttrs.iq.toString()),
+        _tableRow('HT', _combatant.basicAttrs.ht.toString())
+      ],
+    );
+    return table;
+  }
+
+  TableRow _tableRow(String label, String data) {
+    return TableRow(
       children: <Widget>[
-        _basicAttributes(),
+        Text(
+          label,
+          style: Styles.labelStyle(),
+          textAlign: TextAlign.right,
+        ),
+        _smallSpacer,
+        Text(data, textAlign: TextAlign.left, style: Styles.attributeStyle())
       ],
     );
   }
 
-  Row _basicAttributes() {
-    return Row(
-      children: <Widget>[
-        Column(
-          children: <Widget>[Text('ST'), Text('DX'), Text('IQ'), Text('HT')],
-        ),
-        _smallSpacer,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Text(_combatant.basicAttrs.st.toString()),
-            Text(_combatant.basicAttrs.dx.toString()),
-            Text(_combatant.basicAttrs.iq.toString()),
-            Text(_combatant.basicAttrs.ht.toString())
-          ],
-        )
+  Widget _secondaryAttributes() {
+    return Table(
+      defaultColumnWidth: IntrinsicColumnWidth(),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: <TableRow>[
+        _tableRow('Speed', _combatant.secondaryAttrs.speed.toString()),
+        _tableRow('Per', _combatant.secondaryAttrs.per.toString()),
+        _tableRow('Will', _combatant.secondaryAttrs.will.toString()),
+        _tableRow('Move', _combatant.secondaryAttrs.move.toString())
       ],
     );
   }

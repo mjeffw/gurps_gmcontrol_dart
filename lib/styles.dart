@@ -16,6 +16,20 @@ class Styles {
         fontSize: 20.0, color: expanded ? Colors.deepOrange : Colors.black);
   }
 
+  static TextStyle labelStyle() {
+    return TextStyle(
+        fontSize: _textSizeDefault,
+        color: _textColorDefault,
+        fontWeight: FontWeight.w400);
+  }
+
+  static TextStyle attributeStyle() {
+    return TextStyle(
+        fontSize: _textSizeDefault,
+        color: Colors.black,
+        fontWeight: FontWeight.w600);
+  }
+
   static Color _hexToColor(String code) =>
       Color(int.parse(code.substring(0, 6), radix: 16) + 0xFF000000);
 }
