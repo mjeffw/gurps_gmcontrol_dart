@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/src/styles.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/styles.dart';
 
 class DefaultAppBar extends AppBar {
   final String titleText;
