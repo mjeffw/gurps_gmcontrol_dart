@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'blocs/melee_bloc.dart';
-// import 'blocs/combatant_bloc.dart';
-import 'blocs/bloc_provider.dart';
-import 'app.dart';
+import 'package:gurps_gmcontrol_dart/src/app.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
 
 void main() {
   return runApp(BlocProvider<MeleeBloc>(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
-import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/views/melee_view.dart';
-import 'package:gurps_gmcontrol_dart/widgets/default_app_bar.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/views/melee_view.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/default_app_bar.dart';
 
 class Home extends StatelessWidget {
   @override

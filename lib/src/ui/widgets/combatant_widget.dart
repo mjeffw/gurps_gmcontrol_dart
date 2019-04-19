@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
-import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
-import 'package:gurps_gmcontrol_dart/styles.dart';
-import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_widget.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
+import 'package:gurps_gmcontrol_dart/src/styles.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/enumerated_text_widget.dart';
 
 var _spacer = Container(width: 10);
 var _smallSpacer = Container(width: 4);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
-import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
-import 'package:gurps_gmcontrol_dart/models/melee.dart';
-import 'package:gurps_gmcontrol_dart/widgets/combatant_widget.dart';
-import 'package:gurps_gmcontrol_dart/widgets/default_app_bar.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
+import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/combatant_widget.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/default_app_bar.dart';
 
 /// The app page that represents a single combat or melee. Initialized
 /// with the ID of the Melee model.

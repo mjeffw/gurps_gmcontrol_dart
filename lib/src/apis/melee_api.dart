@@ -1,20 +1,24 @@
 import 'dart:convert';
 
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
-import 'package:gurps_gmcontrol_dart/models/melee.dart';
+import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
 
-class MockCombatant {
-  static List<Combatant> fetchAll() {
-    var parsedJson = json.decode(text);
-    var melee = Melee.fromJSON(parsedJson);
-    return melee.combatants;
+class MeleeApi {
+  Future<Melee> fetch({int index}) async {
+    // Give some additional delay to simulate slow network
+    await Future.delayed(const Duration(seconds: 1));
+
+    return Melee.fromJSON(json.decode(_text));
   }
 }
 
-var text = '''
+MeleeApi api = MeleeApi();
+
+var _text = '''
 {
-  "melee": [
+  "id" : 0,
+  "combatants": [
     {
+      "id": 0,
       "name": "Grend Gnashtooth",
       "condition": { "stunned": true, 
         "fpCondition": { "FP" : 12, "fatigue" : 9},
@@ -26,6 +30,7 @@ var text = '''
       "secondaryAttributes": { "move": 6, "speed": 6.75, "per": 12, "will": 11}
     },
     {
+      "id": 1,
       "name": "Peshkali",
       "condition": { "stunned": false, 
         "fpCondition": { "FP" : 12, "fatigue" : 23},
@@ -37,6 +42,7 @@ var text = '''
       "secondaryAttributes": { "move": 7, "speed": 7.00, "per": 11, "will": 15}
     },
     {
+      "id": 2,
       "name": "Findlay Silvertongue",
       "condition": { "stunned": false, 
         "fpCondition": { "FP" : 12, "fatigue" : -24},

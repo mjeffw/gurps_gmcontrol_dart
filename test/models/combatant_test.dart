@@ -1,6 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
 import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
 
 void main() {
   group('FpCondition', () {
