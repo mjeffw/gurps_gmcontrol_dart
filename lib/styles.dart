@@ -26,7 +26,7 @@ class Styles {
   static TextStyle attributeStyle() {
     return TextStyle(
         fontSize: _textSizeDefault,
-        color: Colors.black,
+        color: Colors.grey.shade800,
         fontWeight: FontWeight.w600);
   }
 

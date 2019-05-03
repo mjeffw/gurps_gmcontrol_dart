@@ -4,16 +4,16 @@ import 'package:rxdart/rxdart.dart';
 
 import 'bloc_provider.dart';
 
-class MeleeCombatant {
+class CombatantId {
   final int meleeId;
   final int id;
-  MeleeCombatant({this.meleeId, this.id});
+  CombatantId({this.meleeId, this.id});
 }
 
-class MeleeCombatantSelection {
+class CombatantSelectionId {
   final bool selected;
-  final MeleeCombatant combatantId;
-  MeleeCombatantSelection({this.combatantId, this.selected});
+  final CombatantId combatantId;
+  CombatantSelectionId({this.combatantId, this.selected});
 }
 
 class MeleeBloc implements BlocBase {
@@ -39,13 +39,13 @@ class MeleeBloc implements BlocBase {
   ///
   /// In a given melee, some combatants may be displayed as 'expanded'.
   ///
-  var _selectedIdController = PublishSubject<MeleeCombatant>();
-  Sink<MeleeCombatant> get inSelectedId => _selectedIdController.sink;
+  var _selectedIdController = PublishSubject<CombatantId>();
+  Sink<CombatantId> get inSelectedId => _selectedIdController.sink;
 
-  var _selectedController = PublishSubject<MeleeCombatantSelection>();
-  Sink<MeleeCombatantSelection> get _inSelectedCombatants =>
+  var _selectedController = PublishSubject<CombatantSelectionId>();
+  Sink<CombatantSelectionId> get _inSelectedCombatants =>
       _selectedController.sink;
-  Stream<MeleeCombatantSelection> get outSelectedCombatants =>
+  Stream<CombatantSelectionId> get outSelectedCombatants =>
       _selectedController.stream;
 
   MeleeBloc() {
@@ -104,15 +104,15 @@ class MeleeBloc implements BlocBase {
     _inMeleesList.add(melee);
   }
 
-  void _handleSelection(List<MeleeCombatant> events) {
-    events.forEach((MeleeCombatant f) {
+  void _handleSelection(List<CombatantId> events) {
+    events.forEach((CombatantId f) {
       Melee melee = _meleeMap[f.meleeId];
       if (melee != null) {
         bool updated = melee.select(f.id);
         if (updated) {
           melee.combatants.forEach((it) => _inSelectedCombatants.add(
-              MeleeCombatantSelection(
-                  combatantId: MeleeCombatant(meleeId: melee.id, id: it.id),
+              CombatantSelectionId(
+                  combatantId: CombatantId(meleeId: melee.id, id: it.id),
                   selected: melee.selected.contains(it))));
         }
       }

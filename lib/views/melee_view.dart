@@ -48,6 +48,6 @@ class MeleeView extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
     }
 
-    return CombatantWidget(meleeId, combatant, false);
+    return CombatantWidget(meleeId, combatant, false, index);
   }
 }
