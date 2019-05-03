@@ -1,4 +1,4 @@
-import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
 
 class MeleeBloc implements BlocBase {
   @override

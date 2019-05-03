@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:gurps_gmcontrol_dart/utils/enumeration.dart';
+import 'package:gurps_gmcontrol_dart/src/utils/enumeration.dart';
 
 ///
 /// Represents a single participant within a Melee.
@@ -148,7 +148,7 @@ class Posture implements Enumeration {
 
   PostureValue value;
 
-  Posture({this.value = PostureValue.standing});
+  Posture({this.value = PostureValue.standing}) : assert(value != null);
 
   Posture.fromJSON(json)
       : this(
@@ -202,7 +202,7 @@ class Maneuver implements Enumeration {
 
   ManeuverValue value;
 
-  Maneuver({this.value = ManeuverValue.do_nothing});
+  Maneuver({this.value = ManeuverValue.do_nothing}) : assert(value != null);
 
   Maneuver.fromJSON(json)
       : this(
@@ -267,9 +267,9 @@ class HpCondition implements Enumeration {
       {@required this.hitPoints,
       @required this.injury,
       this.deathOverride = false})
-      : value = _calculateHpCondition(hitPoints, injury, deathOverride),
-        assert(hitPoints != null),
-        assert(injury != null);
+      : assert(hitPoints != null),
+        assert(injury != null),
+        value = _calculateHpCondition(hitPoints, injury, deathOverride);
 
   HpCondition.fromJSON(json)
       : this(
@@ -334,7 +334,7 @@ enum FpConditionValue { normal, very_tired, near_collapse, collapse }
 /// combatant's current fatigue loss.
 ///
 class FpCondition implements Enumeration {
-  static const FP = 'FP';
+  static const _FP = 'FP';
   static const FATIGUE = 'fatigue';
   static const _values = ['Normal', 'Very Tired', 'Near Collapse', 'Collapse'];
 
@@ -348,12 +348,13 @@ class FpCondition implements Enumeration {
   final FpConditionValue value;
 
   FpCondition({@required this.fatiguePoints, @required this.fatigueLoss})
-      : value = _calculateCondition(fatiguePoints, fatigueLoss),
-        assert(fatiguePoints != null),
-        assert(fatigueLoss != null);
+      : assert(fatiguePoints != null),
+        assert(fatigueLoss != null),
+        value = _calculateCondition(fatiguePoints, fatigueLoss);
 
   FpCondition.fromJSON(Map<String, dynamic> json)
-      : this(fatiguePoints: json[FP] as int, fatigueLoss: json[FATIGUE] as int);
+      : this(
+            fatiguePoints: json[_FP] as int, fatigueLoss: json[FATIGUE] as int);
 
   @override
   List<String> get allValues => _values;

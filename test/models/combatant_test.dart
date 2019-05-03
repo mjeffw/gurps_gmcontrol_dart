@@ -1,9 +1,21 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
 import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
+import 'package:matcher/matcher.dart';
 
 void main() {
   group('FpCondition', () {
+    test('null fatigueLoss', () {
+      expect(() => FpCondition(fatigueLoss: null, fatiguePoints: 10),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null fatiguePoints', () {
+      expect(() => FpCondition(fatigueLoss: 10, fatiguePoints: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('all values', () {
       final fp = FpCondition(fatiguePoints: 20, fatigueLoss: 7);
 
@@ -76,6 +88,16 @@ void main() {
   });
 
   group('HpCondition', () {
+    test('null hitPoints', () {
+      expect(() => HpCondition(hitPoints: null, injury: 10),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null injury', () {
+      expect(() => HpCondition(hitPoints: 10, injury: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('all values', () {
       var hp = HpCondition(hitPoints: 10, injury: 0);
       expect(hp.value, HpConditionValue.normal);
@@ -218,6 +240,11 @@ void main() {
   });
 
   group('Maneuver', () {
+    test('null', () {
+      expect(() => Maneuver(value: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('defaults', () {
       var m = Maneuver();
       expect(m.value, ManeuverValue.do_nothing);
@@ -393,6 +420,11 @@ void main() {
   });
 
   group('Posture', () {
+    test('null', () {
+      expect(() => Posture(value: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('defaults', () {
       var p = Posture();
       expect(p.value, PostureValue.standing);
@@ -491,7 +523,52 @@ void main() {
     });
   });
 
+  group('SecondaryAttriubutes', () {
+    test('null move', () {
+      expect(
+          () => SecondaryAttributes(move: null, speed: 5.5, per: 10, will: 10),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null speed', () {
+      expect(() => SecondaryAttributes(move: 5, speed: null, per: 10, will: 10),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null will', () {
+      expect(
+          () => SecondaryAttributes(move: 5, speed: 5.25, per: 10, will: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null per', () {
+      expect(
+          () => SecondaryAttributes(move: 5, speed: 5.25, per: null, will: 10),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+  });
+
   group('BasicAttributes', () {
+    test('null st', () {
+      expect(() => BasicAttributes(st: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null dx', () {
+      expect(() => BasicAttributes(dx: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null iq', () {
+      expect(() => BasicAttributes(iq: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null ht', () {
+      expect(() => BasicAttributes(ht: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('defaults', () {
       var p = BasicAttributes();
       expect(p.st, 10);
@@ -554,6 +631,61 @@ void main() {
   });
 
   group('Condition', () {
+    test('null fpCondition', () {
+      expect(
+          () => Condition(
+              fpCondition: null,
+              hpCondition: null,
+              maneuver: null,
+              posture: null,
+              stunned: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null hpCondition', () {
+      expect(
+          () => Condition(
+              fpCondition: FpCondition(fatiguePoints: 10, fatigueLoss: 0),
+              hpCondition: null,
+              maneuver: null,
+              posture: null,
+              stunned: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null maneuver', () {
+      expect(
+          () => Condition(
+              fpCondition: FpCondition(fatiguePoints: 10, fatigueLoss: 0),
+              hpCondition: HpCondition(injury: 0, hitPoints: 10),
+              maneuver: null,
+              posture: null,
+              stunned: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null posture', () {
+      expect(
+          () => Condition(
+              fpCondition: FpCondition(fatiguePoints: 10, fatigueLoss: 0),
+              hpCondition: HpCondition(injury: 0, hitPoints: 10),
+              maneuver: Maneuver(value: ManeuverValue.aim),
+              posture: null,
+              stunned: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null stunned', () {
+      expect(
+          () => Condition(
+              fpCondition: FpCondition(fatiguePoints: 10, fatigueLoss: 0),
+              hpCondition: HpCondition(injury: 0, hitPoints: 10),
+              maneuver: Maneuver(value: ManeuverValue.aim),
+              posture: Posture(value: PostureValue.crawling),
+              stunned: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('constructors', () {
       var c = Condition(
           fpCondition: FpCondition(fatiguePoints: 12, fatigueLoss: 10),
@@ -597,6 +729,78 @@ void main() {
     });
   });
   group('Combatant', () {
+    test('null name', () {
+      expect(
+          () => Combatant(
+              name: null,
+              condition: null,
+              basicAttrs: null,
+              secondaryAttrs: null,
+              id: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null condition', () {
+      expect(
+          () => Combatant(
+              name: 'Foo',
+              condition: null,
+              basicAttrs: null,
+              secondaryAttrs: null,
+              id: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null secondary', () {
+      expect(
+          () => Combatant(
+              name: 'Foo',
+              condition: Condition(
+                  fpCondition: FpCondition(fatigueLoss: 0, fatiguePoints: 10),
+                  hpCondition: HpCondition(hitPoints: 10, injury: 0),
+                  stunned: true,
+                  posture: Posture(value: PostureValue.kneeling),
+                  maneuver: Maneuver(value: ManeuverValue.all_out_defense)),
+              basicAttrs: null,
+              secondaryAttrs: null,
+              id: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null id', () {
+      expect(
+          () => Combatant(
+              name: 'Foo',
+              condition: Condition(
+                  fpCondition: FpCondition(fatigueLoss: 0, fatiguePoints: 10),
+                  hpCondition: HpCondition(hitPoints: 10, injury: 0),
+                  stunned: true,
+                  posture: Posture(value: PostureValue.kneeling),
+                  maneuver: Maneuver(value: ManeuverValue.all_out_defense)),
+              basicAttrs: BasicAttributes(),
+              secondaryAttrs:
+                  SecondaryAttributes(per: 10, speed: 5.0, move: 5, will: 10),
+              id: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
+    test('null basic', () {
+      expect(
+          () => Combatant(
+              name: 'Foo',
+              condition: Condition(
+                  fpCondition: FpCondition(fatigueLoss: 0, fatiguePoints: 10),
+                  hpCondition: HpCondition(hitPoints: 10, injury: 0),
+                  stunned: true,
+                  posture: Posture(value: PostureValue.kneeling),
+                  maneuver: Maneuver(value: ManeuverValue.all_out_defense)),
+              basicAttrs: null,
+              secondaryAttrs:
+                  SecondaryAttributes(per: 10, speed: 5.0, move: 5, will: 10),
+              id: null),
+          throwsA(const TypeMatcher<AssertionError>()));
+    });
+
     test('constructor', () {
       var c = Combatant(
         id: 1,

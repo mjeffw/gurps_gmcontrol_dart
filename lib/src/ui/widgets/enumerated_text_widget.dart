@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/utils/enumeration.dart';
+import 'package:gurps_gmcontrol_dart/src/utils/enumeration.dart';
 
 class EnumeratedTextWidget extends StatelessWidget {
   final Enumeration _enumeration;

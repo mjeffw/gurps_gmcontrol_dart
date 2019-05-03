@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/blocs/bloc_provider.dart';
-import 'package:gurps_gmcontrol_dart/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/models/combatant.dart';
-import 'package:gurps_gmcontrol_dart/styles.dart';
-import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_menu.dart';
-import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_widget.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/styles.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/enumerated_text_menu.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/enumerated_text_widget.dart';
 
 const normalIcon = '\uf118';
 const stunnedIcon = '\uf567';

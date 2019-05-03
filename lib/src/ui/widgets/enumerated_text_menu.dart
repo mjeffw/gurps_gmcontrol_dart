@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/utils/enumeration.dart';
-import 'package:gurps_gmcontrol_dart/widgets/enumerated_text_widget.dart';
+import 'package:gurps_gmcontrol_dart/src/ui/widgets/enumerated_text_widget.dart';
+import 'package:gurps_gmcontrol_dart/src/utils/enumeration.dart';
 
 class EnumeratedTextMenu extends StatelessWidget {
   final Enumeration enumeration;
