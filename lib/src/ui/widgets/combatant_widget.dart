@@ -14,13 +14,11 @@ var _spacer = Container(width: 10);
 class CombatantWidget extends StatelessWidget {
   final int _meleeId;
   final Combatant _combatant;
-  final bool _expanded;
   final int _index;
 
   const CombatantWidget(
     this._meleeId,
     this._combatant,
-    this._expanded,
     this._index, {
     Key key,
   }) : super(key: key);
@@ -29,54 +27,47 @@ class CombatantWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool wideScreen = (MediaQuery.of(context).size.width > 600);
 
-    final MeleeBloc meleeBloc = BlocProvider.of<MeleeBloc>(context);
+    final meleeBloc = BlocProvider.of<MeleeBloc>(context);
+    final selectionEventSink = meleeBloc.selectionEventSink;
 
     var widget = StreamBuilder<CombatantSelectionId>(
       stream: meleeBloc.outSelectedCombatants.where((t) => _isSameCombatant(t)),
       builder: (BuildContext _, AsyncSnapshot<CombatantSelectionId> snapshot) {
-        var expanded = _isSelected(snapshot);
-        Color background =
-            expanded ? Colors.amber : _isOdd() ? Colors.white : Colors.white;
-
+        var isSelected = _isSelected(snapshot);
         return Container(
-            color: background,
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-            child: Row(
-              children: <Widget>[
-                _gripWidget(),
-                _spacer,
-                Expanded(
-                    child: _mainWidget(
-                        meleeBloc.inSelectedId, wideScreen, expanded)),
-              ],
-            ));
+          color: Styles.listRowBackground(isSelected, _index),
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+          child: Row(
+            children: <Widget>[
+              _gripWidget(),
+              _spacer,
+              Expanded(
+                child: Column(
+                  children:
+                      _children(wideScreen, selectionEventSink, isSelected),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
 
     return widget;
   }
 
-  Widget _mainWidget(
-      Sink<CombatantId> inSelection, bool widescreen, bool expanded) {
-    if (expanded) {
-      return Column(
-        children: <Widget>[
-          _headerRow(widescreen, inSelection),
-          _secondaryRow(),
-        ],
-      );
-    } else {
-      return Column(
-        children: <Widget>[_headerRow(widescreen, inSelection)],
-      );
-    }
+  List<Widget> _children(
+      bool widescreen, Sink<CombatantId> selectionEventSink, bool expanded) {
+    var list = <Widget>[_headerRow(widescreen, selectionEventSink)];
+    if (expanded) list.add(_secondaryRow());
+    return list;
   }
 
-  Widget _headerRow(bool widescreen, Sink<CombatantId> inSelection) {
+  Widget _headerRow(bool widescreen, Sink<CombatantId> selectionEventSink) {
     if (!widescreen) {
       return Column(
         children: <Widget>[
-          Row(children: _headerWidgets1(inSelection)),
+          Row(children: _headerWidgets1(selectionEventSink)),
           Row(
             children: <Widget>[]
               ..add(Expanded(child: _spacer))
@@ -90,7 +81,7 @@ class CombatantWidget extends StatelessWidget {
       children: <Widget>[
         Row(
           children: <Widget>[]
-            ..addAll(_headerWidgets1(inSelection))
+            ..addAll(_headerWidgets1(selectionEventSink))
             ..addAll(_headerWidgets2())
             ..toList(),
         ),
@@ -108,7 +99,7 @@ class CombatantWidget extends StatelessWidget {
           },
           child: Text(
             _combatant.name,
-            style: Styles.nameTextStyle(_expanded),
+            style: Styles.nameTextStyle,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -126,7 +117,6 @@ class CombatantWidget extends StatelessWidget {
       EnumeratedTextMenu(
           enumeration: _combatant.condition.maneuver,
           onSelected: (String f) {}),
-      // EnumeratedTextWidget(_combatant.condition.maneuver),
       _spacer,
       EnumeratedTextWidget(_combatant.condition.fpCondition),
       _spacer,
@@ -158,17 +148,7 @@ class CombatantWidget extends StatelessWidget {
     return table;
   }
 
-  Widget _gripWidget() {
-    var textStyle = TextStyle(
-      fontFamily: 'FontAwesome Solid',
-      fontSize: 16.0,
-      color: Colors.grey,
-    );
-
-    return Text('\uf7a4', style: textStyle);
-  }
-
-  bool _isOdd() => (_index % 2 != 0);
+  Widget _gripWidget() => Text('\uf7a4', style: Styles.solidIconStyle);
 
   bool _isSameCombatant(CombatantSelectionId t) =>
       t.combatantId.id == _combatant.id && t.combatantId.meleeId == _meleeId;
@@ -190,13 +170,11 @@ class CombatantWidget extends StatelessWidget {
   }
 
   Widget _stunnedWidget(bool stunned) {
-    var textStyle = TextStyle(
-      fontFamily: 'FontAwesome Solid',
-      fontSize: 20.0,
-      color: stunned ? Colors.red.shade800 : Colors.green.shade600,
-    );
+    var color2 = stunned ? Colors.red.shade800 : Colors.green.shade600;
 
-    return Text(stunned ? stunnedIcon : normalIcon, style: textStyle);
+    return Text(stunned ? stunnedIcon : normalIcon,
+        style:
+            Styles.solidIconStyle.apply(fontSizeFactor: 1.25, color: color2));
   }
 
   TableRow _tableRow(String label, String data) {
@@ -204,11 +182,11 @@ class CombatantWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           label,
-          style: Styles.labelStyle(),
+          style: Styles.labelStyle,
           textAlign: TextAlign.left,
         ),
         _smallSpacer,
-        Text(data, textAlign: TextAlign.left, style: Styles.attributeStyle())
+        Text(data, textAlign: TextAlign.left, style: Styles.attributeStyle)
       ],
     );
   }

@@ -40,7 +40,7 @@ class MeleeBloc implements BlocBase {
   /// In a given melee, some combatants may be displayed as 'expanded'.
   ///
   var _selectedIdController = PublishSubject<CombatantId>();
-  Sink<CombatantId> get inSelectedId => _selectedIdController.sink;
+  Sink<CombatantId> get selectionEventSink => _selectedIdController.sink;
 
   var _selectedController = PublishSubject<CombatantSelectionId>();
   Sink<CombatantSelectionId> get _inSelectedCombatants =>
