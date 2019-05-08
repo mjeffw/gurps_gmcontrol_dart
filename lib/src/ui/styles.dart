@@ -28,6 +28,7 @@ class Styles {
   static final _oddRowBackground = Colors.grey.shade100;
   static final _evenRowBackground = Colors.white;
   static final _selectedRowBackground = Colors.amberAccent;
+  static final _minimumWidthWidescreen = 600;
 
   static TextStyle get navBarTitle => _navBarTitle;
   static TextStyle get nameTextStyle => _nameTextStyle;
@@ -43,4 +44,7 @@ class Styles {
       e ? _selectedRowBackground : Styles.listBackground(_isOdd(index));
 
   static bool _isOdd(int index) => (index % 2 != 0);
+
+  static bool isWidescreen(BuildContext context) =>
+      (MediaQuery.of(context).size.width > _minimumWidthWidescreen);
 }

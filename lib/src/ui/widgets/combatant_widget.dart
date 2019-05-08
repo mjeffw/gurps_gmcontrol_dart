@@ -25,15 +25,14 @@ class CombatantWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool wideScreen = (MediaQuery.of(context).size.width > 600);
-
+    final wideScreen = Styles.isWidescreen(context);
     final meleeBloc = BlocProvider.of<MeleeBloc>(context);
     final selectionEventSink = meleeBloc.selectionEventSink;
 
     var widget = StreamBuilder<CombatantSelectionId>(
       stream: meleeBloc.outSelectedCombatants.where((t) => _isSameCombatant(t)),
       builder: (BuildContext _, AsyncSnapshot<CombatantSelectionId> snapshot) {
-        var isSelected = _isSelected(snapshot);
+        final isSelected = _isSelected(snapshot);
         return Container(
           color: Styles.listRowBackground(isSelected, _index),
           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -42,10 +41,7 @@ class CombatantWidget extends StatelessWidget {
               _gripWidget(),
               _spacer,
               Expanded(
-                child: Column(
-                  children:
-                      _children(wideScreen, selectionEventSink, isSelected),
-                ),
+                child: Column(children: _children(context, isSelected)),
               ),
             ],
           ),
@@ -56,45 +52,49 @@ class CombatantWidget extends StatelessWidget {
     return widget;
   }
 
-  List<Widget> _children(
-      bool widescreen, Sink<CombatantId> selectionEventSink, bool expanded) {
-    var list = <Widget>[_headerRow(widescreen, selectionEventSink)];
-    if (expanded) list.add(_secondaryRow());
-    return list;
+  List<Widget> _children(BuildContext context, bool expanded) {
+    return <Widget>[
+      _headerRow(context),
+      ...(expanded ? <Widget>[_secondaryRow()] : <Widget>[])
+    ];
   }
 
-  Widget _headerRow(bool widescreen, Sink<CombatantId> selectionEventSink) {
-    if (!widescreen) {
+  Widget _headerRow(BuildContext context) {
+    final selectionEventSink =
+        BlocProvider.of<MeleeBloc>(context).selectionEventSink;
+
+    if (!Styles.isWidescreen(context)) {
       return Column(
         children: <Widget>[
           Row(children: _headerWidgets1(selectionEventSink)),
           Row(
-            children: <Widget>[]
-              ..add(Expanded(child: _spacer))
-              ..addAll(_headerWidgets2())
-              ..toList(),
+            children: <Widget>[
+              Expanded(child: _spacer),
+              ..._headerWidgets2(),
+            ],
           ),
         ],
       );
     }
+
     return Column(
       children: <Widget>[
         Row(
-          children: <Widget>[]
-            ..addAll(_headerWidgets1(selectionEventSink))
-            ..addAll(_headerWidgets2())
-            ..toList(),
+          children: <Widget>[
+            ..._headerWidgets1(selectionEventSink),
+            ..._headerWidgets2(),
+          ],
         ),
       ],
     );
   }
 
-  List<Widget> _headerWidgets1(Sink<CombatantId> inSelectedCombatants) {
+  List<Widget> _headerWidgets1(Sink<CombatantId> selectionEventSink) {
     return <Widget>[
       Expanded(
         child: GestureDetector(
           onTap: () {
-            inSelectedCombatants
+            selectionEventSink
                 .add(CombatantId(id: _combatant.id, meleeId: _meleeId));
           },
           child: Text(
