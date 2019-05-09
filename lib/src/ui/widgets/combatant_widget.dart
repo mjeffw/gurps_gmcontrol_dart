@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
+import 'package:gurps_gmcontrol_dart/src/blocs/combatant_bloc.dart';
 import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
 import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
 import 'package:gurps_gmcontrol_dart/src/ui/styles.dart';
@@ -25,12 +26,10 @@ class CombatantWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wideScreen = Styles.isWidescreen(context);
     final meleeBloc = BlocProvider.of<MeleeBloc>(context);
-    final selectionEventSink = meleeBloc.selectionEventSink;
 
     var widget = StreamBuilder<CombatantSelectionId>(
-      stream: meleeBloc.outSelectedCombatants.where((t) => _isSameCombatant(t)),
+      stream: meleeBloc.selectedStream.where((t) => _isSameCombatant(t)),
       builder: (BuildContext _, AsyncSnapshot<CombatantSelectionId> snapshot) {
         final isSelected = _isSelected(snapshot);
         return Container(
@@ -60,8 +59,9 @@ class CombatantWidget extends StatelessWidget {
   }
 
   Widget _headerRow(BuildContext context) {
-    final selectionEventSink =
-        BlocProvider.of<MeleeBloc>(context).selectionEventSink;
+    var meleeBloc = BlocProvider.of<MeleeBloc>(context);
+    final selectionEventSink = meleeBloc.selectionEventSink;
+    final combatantEventSink = meleeBloc.combatantEventSink;
 
     if (!Styles.isWidescreen(context)) {
       return Column(
@@ -70,7 +70,7 @@ class CombatantWidget extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(child: _spacer),
-              ..._headerWidgets2(),
+              ..._headerWidgets2(combatantEventSink),
             ],
           ),
         ],
@@ -82,7 +82,7 @@ class CombatantWidget extends StatelessWidget {
         Row(
           children: <Widget>[
             ..._headerWidgets1(selectionEventSink),
-            ..._headerWidgets2(),
+            ..._headerWidgets2(combatantEventSink),
           ],
         ),
       ],
@@ -111,12 +111,14 @@ class CombatantWidget extends StatelessWidget {
     ];
   }
 
-  List<Widget> _headerWidgets2() {
+  List<Widget> _headerWidgets2(Sink<CombatantEvent> combatantEventSink) {
     return <Widget>[
       _spacer,
       EnumeratedTextMenu(
           enumeration: _combatant.condition.maneuver,
-          onSelected: (String f) {}),
+          onSelected: (String f) {
+            print(f);
+          }),
       _spacer,
       EnumeratedTextWidget(_combatant.condition.fpCondition),
       _spacer,

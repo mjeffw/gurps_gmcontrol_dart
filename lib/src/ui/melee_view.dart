@@ -17,7 +17,7 @@ class MeleeView extends StatelessWidget {
     final MeleeBloc meleeBloc = BlocProvider.of<MeleeBloc>(context);
 
     /// Ask the melee BLoC to add the melee object associated with this ID
-    meleeBloc.inMeleeId.add(_id);
+    meleeBloc.meleeEventSink.add(_id);
 
     return Scaffold(
       appBar: DefaultAppBar(titleText: 'GMCONTROL MELEE'),
@@ -27,7 +27,7 @@ class MeleeView extends StatelessWidget {
 
   Widget _listView(BuildContext context, MeleeBloc meleeBloc) {
     return StreamBuilder<Melee>(
-        stream: meleeBloc.outMeleeList.where((t) => t.id == _id),
+        stream: meleeBloc.meleeDataStream.where((t) => t.id == _id),
         builder: (BuildContext context, AsyncSnapshot<Melee> snapshot) {
           var builder = ListView.builder(
             itemBuilder: (BuildContext context, int index) {

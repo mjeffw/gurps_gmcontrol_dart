@@ -4,6 +4,9 @@ import 'package:rxdart/rxdart.dart';
 
 import 'bloc_provider.dart';
 
+///
+/// Uniquely identifies a combatant
+///
 class CombatantId {
   final int meleeId;
   final int id;
@@ -20,21 +23,38 @@ class MeleeBloc implements BlocBase {
   // ##########  STREAMS  ##############
 
   ///
-  /// Request the index of the Melee object to render. The index is checked to
-  /// see if it already exists; if it does not, it is fetched from the api.
+  /// Temporarily store the index (ID) of a melee being read from the datastore.
+  /// This prevents the same melee from being fetched twice.
   ///
   final _meleesBeingFetched = Set<int>();
-  var _meleeMap = <int, Melee>{};
-
-  PublishSubject<int> _idController = PublishSubject<int>();
-  Sink<int> get inMeleeId => _idController.sink;
 
   ///
-  /// We are going to need the list of combatants to be displayed
+  /// Cache of melees read from the datastore. If the melee object is updated,
+  /// we'll have to write it back to the datastore as well.
+  ///
+  var _meleeMap = <int, Melee>{};
+
+  ///
+  /// The only event this stream (currently) understands is the request of
+  /// the index of the Melee object to render. The index is checked to
+  /// see if it already exists; if it does not, it is fetched from the api.
+  ///
+  PublishSubject<int> _idController = PublishSubject<int>();
+  Sink<int> get meleeEventSink => _idController.sink;
+
+  ///
+  /// The meleeDataStream contains the Melee object for every index requested
+  /// via the meleeEventSink.
   ///
   PublishSubject<Melee> _meleeController = PublishSubject<Melee>();
   Sink<Melee> get _inMeleesList => _meleeController.sink;
-  Stream<Melee> get outMeleeList => _meleeController.stream;
+  Stream<Melee> get meleeDataStream => _meleeController.stream;
+
+  ///
+  /// Need to change the streams below to a single "event" based stream.
+  /// First event: select combatant.
+  /// There will be others, like increment turn/round.
+  ///
 
   ///
   /// In a given melee, some combatants may be displayed as 'expanded'.
@@ -43,10 +63,8 @@ class MeleeBloc implements BlocBase {
   Sink<CombatantId> get selectionEventSink => _selectedIdController.sink;
 
   var _selectedController = PublishSubject<CombatantSelectionId>();
-  Sink<CombatantSelectionId> get _inSelectedCombatants =>
-      _selectedController.sink;
-  Stream<CombatantSelectionId> get outSelectedCombatants =>
-      _selectedController.stream;
+  Sink<CombatantSelectionId> get _inSelected => _selectedController.sink;
+  Stream<CombatantSelectionId> get selectedStream => _selectedController.stream;
 
   MeleeBloc() {
     _idController.stream
@@ -61,6 +79,8 @@ class MeleeBloc implements BlocBase {
         .where((batch) => batch.isNotEmpty)
         .listen(_handleSelection);
   }
+
+  get combatantEventSink => null;
 
   @override
   void dispose() {
@@ -110,10 +130,9 @@ class MeleeBloc implements BlocBase {
       if (melee != null) {
         bool updated = melee.select(f.id);
         if (updated) {
-          melee.combatants.forEach((it) => _inSelectedCombatants.add(
-              CombatantSelectionId(
-                  combatantId: CombatantId(meleeId: melee.id, id: it.id),
-                  selected: melee.selected.contains(it))));
+          melee.combatants.forEach((it) => _inSelected.add(CombatantSelectionId(
+              combatantId: CombatantId(meleeId: melee.id, id: it.id),
+              selected: melee.selected.contains(it))));
         }
       }
     });
