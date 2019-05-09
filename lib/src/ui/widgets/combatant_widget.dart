@@ -28,9 +28,9 @@ class CombatantWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final meleeBloc = BlocProvider.of<MeleeBloc>(context);
 
-    var widget = StreamBuilder<CombatantSelectionId>(
+    var widget = StreamBuilder<SelectionEvent>(
       stream: meleeBloc.selectedStream.where((t) => _isSameCombatant(t)),
-      builder: (BuildContext _, AsyncSnapshot<CombatantSelectionId> snapshot) {
+      builder: (BuildContext _, AsyncSnapshot<SelectionEvent> snapshot) {
         final isSelected = _isSelected(snapshot);
         return Container(
           color: Styles.listRowBackground(isSelected, _index),
@@ -152,10 +152,10 @@ class CombatantWidget extends StatelessWidget {
 
   Widget _gripWidget() => Text('\uf7a4', style: Styles.solidIconStyle);
 
-  bool _isSameCombatant(CombatantSelectionId t) =>
+  bool _isSameCombatant(SelectionEvent t) =>
       t.combatantId.id == _combatant.id && t.combatantId.meleeId == _meleeId;
 
-  bool _isSelected(AsyncSnapshot<CombatantSelectionId> snapshot) =>
+  bool _isSelected(AsyncSnapshot<SelectionEvent> snapshot) =>
       snapshot.data != null && snapshot.data.selected;
 
   Widget _secondaryAttributes() {
