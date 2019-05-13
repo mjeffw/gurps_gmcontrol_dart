@@ -82,6 +82,7 @@ class CombatantWidget extends StatelessWidget {
         Row(
           children: <Widget>[
             ..._headerWidgets1(selectionEventSink),
+            _spacer,
             ..._headerWidgets2(combatantEventSink),
           ],
         ),
@@ -113,11 +114,10 @@ class CombatantWidget extends StatelessWidget {
 
   List<Widget> _headerWidgets2(Sink<CombatantEvent> combatantEventSink) {
     return <Widget>[
-      _spacer,
       EnumeratedTextMenu(
           enumeration: _combatant.condition.maneuver,
           onSelected: (String f) {
-            print(f);
+            changeManeuver(combatantEventSink, f);
           }),
       _spacer,
       EnumeratedTextWidget(_combatant.condition.fpCondition),
@@ -192,4 +192,6 @@ class CombatantWidget extends StatelessWidget {
       ],
     );
   }
+
+  void changeManeuver(Sink<CombatantEvent> combatantEventSink, String f) {}
 }
