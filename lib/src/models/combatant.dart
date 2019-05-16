@@ -291,18 +291,16 @@ class Combatant {
 
   Combatant(
       {@required this.id,
-      @required CharacterFactory factory,
+      @required this.character,
       this.condition = const Condition()})
       : assert(id != null),
-        assert(factory != null),
-        assert(condition != null),
-        character = factory.call(id);
+        assert(condition != null);
 
-  Combatant.fromJSON(Map<String, dynamic> json, CharacterFactory factory)
+  Combatant.fromJSON(Map<String, dynamic> json)
       : this(
             id: json['id'] as int,
             condition: Condition.fromJSON(json['condition']),
-            factory: factory);
+            character: null);
 
   FpConditionEnum get fpCondition => FpConditionEnum(
       fp: character.secondaryAttrs.fp, fatigueLoss: condition.fatigue);

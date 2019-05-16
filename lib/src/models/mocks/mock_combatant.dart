@@ -20,7 +20,7 @@ class MockCombatant {
 
   static List<Combatant> fetchAll() {
     var parsedJson = json.decode(combatText);
-    var melee = Melee.fromJSON(parsedJson, factory);
+    var melee = Melee.fromJSON(parsedJson);
     return melee.combatants;
   }
 }

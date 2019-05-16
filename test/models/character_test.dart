@@ -226,14 +226,6 @@ void main() {
         "bio": {
           "name": "Bobbie"
         },
-        "condition": {
-          "stunned": true,
-          "fatigue": 35,
-          "injury": 9,
-          "failedDeathCheck": false,
-          "maneuver": "do_nothing",
-          "posture": "kneeling"
-        },
         "basicAttributes": {
           "ST": 13, "DX": 7, "IQ": 15, "HT": 9
         },

@@ -536,22 +536,17 @@ void main() {
 
   group('Combatant', () {
     test('constructor with nulls', () {
-      expect(() => Combatant(id: null, factory: (_) => character),
-          throwsA(const TypeMatcher<AssertionError>()));
-    });
-
-    test('constructor with null factory', () {
-      expect(() => Combatant(id: 1, factory: null),
+      expect(() => Combatant(id: null, character: null),
           throwsA(const TypeMatcher<AssertionError>()));
     });
 
     test('constructor with null condition', () {
-      expect(() => Combatant(id: 1, factory: (_) => character, condition: null),
+      expect(() => Combatant(id: 1, character: character, condition: null),
           throwsA(const TypeMatcher<AssertionError>()));
     });
 
     test('constructor', () {
-      var c = Combatant(id: 100, factory: (_) => character);
+      var c = Combatant(id: 100, character: character);
       expect(c.id, 100);
       expect(c.fpCondition.value, FpCondition.normal);
       expect(c.posture.value, Posture.standing);
@@ -573,7 +568,9 @@ void main() {
         }
       }''';
 
-      var c = Combatant.fromJSON(json.decode(text), (_) => character);
+      var temp = Combatant.fromJSON(json.decode(text));
+      var c = Combatant(
+          id: temp.id, condition: temp.condition, character: character);
       expect(c.id, 200);
       expect(c.fpCondition.value, FpCondition.collapse);
       expect(c.hpCondition.value, HpCondition.reeling);

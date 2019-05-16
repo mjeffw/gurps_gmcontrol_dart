@@ -7,20 +7,20 @@ import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
 void main() {
   group('melee', () {
     test('constructor, empty state', () {
-      var m = Melee(id: 1, combatants: [], selected: [], factory: (_) => null);
+      var m = Melee(id: 1, combatants: [], selected: []);
       expect(m.id, 1);
       expect(m.combatants, isEmpty);
       expect(m.selected, isEmpty);
     });
     test('constructor, nonempty state', () {
       var m = Melee(
-          id: 2,
-          combatants: [
-            Combatant(id: 100, factory: (_) => null),
-            Combatant(id: 101, factory: (_) => null),
-          ],
-          selected: [101],
-          factory: (_) => null);
+        id: 2,
+        combatants: [
+          Combatant(id: 100, character: null),
+          Combatant(id: 101, character: null),
+        ],
+        selected: [101],
+      );
       expect(m.id, 2);
       expect(m.combatants, hasLength(2));
       expect(m.selected, contains(101));
@@ -59,7 +59,7 @@ void main() {
        }
        ''';
 
-      var m = Melee.fromJSON(json.decode(text), (_) => null);
+      var m = Melee.fromJSON(json.decode(text));
       expect(m.id, 3);
       expect(m.combatants.map((f) => f.id), containsAll([200, 201]));
       expect(m.selected, containsAll([200, 201]));
@@ -67,13 +67,13 @@ void main() {
 
     test('select new item', () {
       var m1 = Melee(
-          id: 2,
-          combatants: [
-            Combatant(id: 100, factory: (_) => null),
-            Combatant(id: 101, factory: (_) => null),
-          ],
-          selected: [],
-          factory: (_) => null);
+        id: 2,
+        combatants: [
+          Combatant(id: 100, character: null),
+          Combatant(id: 101, character: null),
+        ],
+        selected: [],
+      );
 
       var m2 = m1.select(100);
 
@@ -83,13 +83,13 @@ void main() {
 
     test('select nonexisting item', () {
       var m1 = Melee(
-          id: 2,
-          combatants: [
-            Combatant(id: 100, factory: (_) => null),
-            Combatant(id: 101, factory: (_) => null),
-          ],
-          selected: [],
-          factory: (_) => null);
+        id: 2,
+        combatants: [
+          Combatant(id: 100, character: null),
+          Combatant(id: 101, character: null),
+        ],
+        selected: [],
+      );
 
       var m2 = m1.select(200);
 
@@ -99,13 +99,13 @@ void main() {
 
     test('select already selected', () {
       var m1 = Melee(
-          id: 2,
-          combatants: [
-            Combatant(id: 100, factory: (_) => null),
-            Combatant(id: 101, factory: (_) => null),
-          ],
-          selected: [101],
-          factory: (_) => null);
+        id: 2,
+        combatants: [
+          Combatant(id: 100, character: null),
+          Combatant(id: 101, character: null),
+        ],
+        selected: [101],
+      );
 
       var m2 = m1.select(101);
 
