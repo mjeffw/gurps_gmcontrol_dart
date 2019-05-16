@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
 import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
 
 class MeleeApi {
-  Future<Melee> fetch({int index}) async {
+  Future<Melee> fetch({int index, CharacterFactory factory}) async {
     // Give some additional delay to simulate slow network
     await Future.delayed(const Duration(seconds: 1));
 
-    return Melee.fromJSON(json.decode(_text));
+    return Melee.fromJSON(json.decode(_text), factory);
   }
 }
 
