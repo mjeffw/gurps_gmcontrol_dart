@@ -28,9 +28,9 @@ class CombatantWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final meleeBloc = BlocProvider.of<MeleeBloc>(context);
 
-    var widget = StreamBuilder<CombatantSelectionId>(
+    var widget = StreamBuilder<SelectionEvent>(
       stream: meleeBloc.selectedStream.where((t) => _isSameCombatant(t)),
-      builder: (BuildContext _, AsyncSnapshot<CombatantSelectionId> snapshot) {
+      builder: (BuildContext _, AsyncSnapshot<SelectionEvent> snapshot) {
         final isSelected = _isSelected(snapshot);
         return Container(
           color: Styles.listRowBackground(isSelected, _index),
@@ -82,6 +82,7 @@ class CombatantWidget extends StatelessWidget {
         Row(
           children: <Widget>[
             ..._headerWidgets1(selectionEventSink),
+            _spacer,
             ..._headerWidgets2(combatantEventSink),
           ],
         ),
@@ -98,14 +99,14 @@ class CombatantWidget extends StatelessWidget {
                 .add(CombatantId(id: _combatant.id, meleeId: _meleeId));
           },
           child: Text(
-            _combatant.name,
+            _combatant.character.bio.name,
             style: Styles.nameTextStyle,
             overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
       _spacer,
-      EnumeratedTextWidget(_combatant.condition.posture),
+      EnumeratedTextWidget(_combatant.posture),
       _spacer,
       _stunnedWidget(_combatant.condition.stunned),
     ];
@@ -113,16 +114,15 @@ class CombatantWidget extends StatelessWidget {
 
   List<Widget> _headerWidgets2(Sink<CombatantEvent> combatantEventSink) {
     return <Widget>[
-      _spacer,
       EnumeratedTextMenu(
-          enumeration: _combatant.condition.maneuver,
+          enumeration: _combatant.maneuver,
           onSelected: (String f) {
-            print(f);
+            changeManeuver(combatantEventSink, f);
           }),
       _spacer,
-      EnumeratedTextWidget(_combatant.condition.fpCondition),
+      EnumeratedTextWidget(_combatant.fpCondition),
       _spacer,
-      EnumeratedTextWidget(_combatant.condition.hpCondition),
+      EnumeratedTextWidget(_combatant.hpCondition),
     ];
   }
 
@@ -141,10 +141,10 @@ class CombatantWidget extends StatelessWidget {
       defaultColumnWidth: IntrinsicColumnWidth(),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: <TableRow>[
-        _tableRow('ST', _combatant.basicAttrs.st.toString()),
-        _tableRow('DX', _combatant.basicAttrs.dx.toString()),
-        _tableRow('IQ', _combatant.basicAttrs.iq.toString()),
-        _tableRow('HT', _combatant.basicAttrs.ht.toString())
+        _tableRow('ST', _combatant.character.basicAttrs.st.toString()),
+        _tableRow('DX', _combatant.character.basicAttrs.dx.toString()),
+        _tableRow('IQ', _combatant.character.basicAttrs.iq.toString()),
+        _tableRow('HT', _combatant.character.basicAttrs.ht.toString())
       ],
     );
     return table;
@@ -152,10 +152,10 @@ class CombatantWidget extends StatelessWidget {
 
   Widget _gripWidget() => Text('\uf7a4', style: Styles.solidIconStyle);
 
-  bool _isSameCombatant(CombatantSelectionId t) =>
+  bool _isSameCombatant(SelectionEvent t) =>
       t.combatantId.id == _combatant.id && t.combatantId.meleeId == _meleeId;
 
-  bool _isSelected(AsyncSnapshot<CombatantSelectionId> snapshot) =>
+  bool _isSelected(AsyncSnapshot<SelectionEvent> snapshot) =>
       snapshot.data != null && snapshot.data.selected;
 
   Widget _secondaryAttributes() {
@@ -163,10 +163,11 @@ class CombatantWidget extends StatelessWidget {
       defaultColumnWidth: IntrinsicColumnWidth(),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: <TableRow>[
-        _tableRow('Speed', _combatant.secondaryAttrs.speed.toString()),
-        _tableRow('Per', _combatant.secondaryAttrs.per.toString()),
-        _tableRow('Will', _combatant.secondaryAttrs.will.toString()),
-        _tableRow('Move', _combatant.secondaryAttrs.move.toString())
+        _tableRow(
+            'Speed', _combatant.character.secondaryAttrs.speed.toString()),
+        _tableRow('Per', _combatant.character.secondaryAttrs.per.toString()),
+        _tableRow('Will', _combatant.character.secondaryAttrs.will.toString()),
+        _tableRow('Move', _combatant.character.secondaryAttrs.move.toString())
       ],
     );
   }
@@ -192,4 +193,6 @@ class CombatantWidget extends StatelessWidget {
       ],
     );
   }
+
+  void changeManeuver(Sink<CombatantEvent> combatantEventSink, String f) {}
 }

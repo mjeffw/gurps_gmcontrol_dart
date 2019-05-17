@@ -1,57 +1,78 @@
 import 'dart:convert';
 
+import 'package:gurps_gmcontrol_dart/src/apis/character_api.dart';
+import 'package:gurps_gmcontrol_dart/src/models/character.dart';
+import 'package:gurps_gmcontrol_dart/src/models/combatant.dart';
 import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
+
+MeleeApi meleeApi = MeleeApi();
 
 class MeleeApi {
   Future<Melee> fetch({int index}) async {
     // Give some additional delay to simulate slow network
     await Future.delayed(const Duration(seconds: 1));
 
-    return Melee.fromJSON(json.decode(_text));
+    var temp = Melee.fromJSON(json.decode(_meleeJsonText));
+    var list = await resolveList(temp);
+    var melee = Melee(id: temp.id, selected: temp.selected, combatants: list);
+    return melee;
+  }
+
+  Future<List<Combatant>> resolveList(Melee melee) async {
+    var list = <Combatant>[];
+    melee.combatants.forEach((it) async {
+      Combatant c = await resolveCombatants(it);
+      list.add(c);
+    });
+
+    return list;
+  }
+
+  Future<Combatant> resolveCombatants(Combatant element) async {
+    Character c = await characterApi.fetch(element.id);
+    Combatant result =
+        Combatant(id: element.id, character: c, condition: element.condition);
+    return result;
   }
 }
 
-MeleeApi api = MeleeApi();
-
-var _text = '''
+var _meleeJsonText = '''
 {
   "id" : 0,
+  "selected":[],
   "combatants": [
     {
-      "id": 0,
-      "name": "Grend Gnashtooth",
-      "condition": { "stunned": true, 
-        "fpCondition": { "FP" : 12, "fatigue" : 9},
-        "hpCondition": { "HP": 15, "injury": 15, "dead": false },
-        "maneuver": { "value": "do_nothing"  },
-        "posture": { "value": "crawling" }
-      },
-      "basicAttributes": { "ST": 13, "DX": 7, "IQ": 15, "HT": 9 },
-      "secondaryAttributes": { "move": 6, "speed": 6.75, "per": 12, "will": 11}
+      "id": 100,
+      "condition": { 
+        "stunned": true, 
+        "fatigue" : 9,
+        "injury": 15, 
+        "failedDeathCheck": false,
+        "maneuver": "do_nothing",
+        "posture": "crawling"
+      }
     },
     {
-      "id": 1,
-      "name": "Peshkali",
-      "condition": { "stunned": false, 
-        "fpCondition": { "FP" : 12, "fatigue" : 23},
-        "hpCondition": { "HP": 12, "injury": -3, "dead": false },
-        "maneuver": { "value": "aim"  },
-        "posture": { "value": "standing" }
-      },
-      "basicAttributes": { "ST": 14, "DX": 9, "IQ": 8, "HT": 13 },
-      "secondaryAttributes": { "move": 7, "speed": 7.00, "per": 11, "will": 15}
+      "id": 101,
+      "condition": { 
+        "stunned": false, 
+        "fatigue": 23,
+        "injury": 3,
+        "failedDeathCheck": false,
+        "maneuver": "aim",
+        "posture": "standing"
+      }
     },
     {
-      "id": 2,
-      "name": "Findlay Silvertongue",
-      "condition": { "stunned": false, 
-        "fpCondition": { "FP" : 12, "fatigue" : -24},
-        "hpCondition": { "HP": 12, "injury": 1, "dead": false },
-        "maneuver": { "value": "move_and_attack"  },
-        "posture": { "value": "kneeling" }
-      },
-      "basicAttributes": { "ST": 14, "DX": 12, "IQ": 11, "HT": 13 },
-      "secondaryAttributes": { "move": 5, "speed": 5.50, "per": 13, "will": 12}
+      "id": 102,
+      "condition": {
+        "stunned": false, 
+        "fatigue": 24,
+        "injury": 1, 
+        "failedDeathCheck": false,
+        "maneuver": "move_and_attack",
+        "posture": "kneeling"
+      }
     }
   ]
 }

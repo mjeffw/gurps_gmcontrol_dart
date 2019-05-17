@@ -13,10 +13,10 @@ class CombatantId {
   CombatantId({this.meleeId, this.id});
 }
 
-class CombatantSelectionId {
+class SelectionEvent {
   final bool selected;
   final CombatantId combatantId;
-  CombatantSelectionId({this.combatantId, this.selected});
+  SelectionEvent({this.combatantId, this.selected});
 }
 
 class MeleeBloc implements BlocBase {
@@ -62,9 +62,9 @@ class MeleeBloc implements BlocBase {
   var _selectedIdController = PublishSubject<CombatantId>();
   Sink<CombatantId> get selectionEventSink => _selectedIdController.sink;
 
-  var _selectedController = PublishSubject<CombatantSelectionId>();
-  Sink<CombatantSelectionId> get _inSelected => _selectedController.sink;
-  Stream<CombatantSelectionId> get selectedStream => _selectedController.stream;
+  var _selectedController = PublishSubject<SelectionEvent>();
+  Sink<SelectionEvent> get _inSelected => _selectedController.sink;
+  Stream<SelectionEvent> get selectedStream => _selectedController.stream;
 
   MeleeBloc() {
     _idController.stream
@@ -104,7 +104,7 @@ class MeleeBloc implements BlocBase {
         // remember that we are fetching it
         _meleesBeingFetched.add(id);
         // fetch it
-        api.fetch(index: id).then(
+        meleeApi.fetch(index: id).then(
             (Melee fetchedMelee) => _handleFetchedMelee(fetchedMelee, id));
       }
     });
@@ -128,11 +128,12 @@ class MeleeBloc implements BlocBase {
     events.forEach((CombatantId f) {
       Melee melee = _meleeMap[f.meleeId];
       if (melee != null) {
-        bool updated = melee.select(f.id);
-        if (updated) {
-          melee.combatants.forEach((it) => _inSelected.add(CombatantSelectionId(
-              combatantId: CombatantId(meleeId: melee.id, id: it.id),
-              selected: melee.selected.contains(it))));
+        Melee updated = melee.select(f.id);
+        if (!identical(melee, updated)) {
+          _meleeMap[updated.id] = updated;
+          updated.combatants.forEach((it) => _inSelected.add(SelectionEvent(
+              combatantId: CombatantId(meleeId: updated.id, id: it.id),
+              selected: updated.selected.contains(it))));
         }
       }
     });
