@@ -31,6 +31,8 @@ class _CombatantWidgetState extends State<CombatantWidget> {
     final combatant = Provider.of<Combatant>(context);
     final isWideScreen = Styles.isWidescreen(context);
 
+    print('paint');
+
     return Container(
       color: Styles.listRowBackground(isSelected, widget.index),
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),

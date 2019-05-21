@@ -540,11 +540,6 @@ void main() {
           throwsA(const TypeMatcher<AssertionError>()));
     });
 
-    test('constructor with null condition', () {
-      expect(() => Combatant(id: 1, character: character, condition: null),
-          throwsA(const TypeMatcher<AssertionError>()));
-    });
-
     test('constructor', () {
       var c = Combatant(id: 100, character: character);
       expect(c.id, 100);

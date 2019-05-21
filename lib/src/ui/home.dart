@@ -25,15 +25,15 @@ class Home extends StatelessWidget {
   }
 
   void _openMeleeView(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => ChangeNotifierProvider<Melee>(
-              builder: (_) {
-                meleeApi.fetch(index: 0);
-              },
-              child: MeleeView(),
-            ),
-      ),
-    );
+    meleeApi.fetch(index: 0).then((Melee m) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => ChangeNotifierProvider<Melee>(
+                builder: (_) => m,
+                child: MeleeView(),
+              ),
+        ),
+      );
+    });
   }
 }

@@ -244,14 +244,14 @@ class ManeuverEnum implements Enumeration {
 /// matter during combat.
 ///
 class Condition {
-  final int fatigue;
-  final int injury;
-  final bool stunned;
-  final bool failedDeathCheck;
-  final Posture posture;
-  final Maneuver maneuver;
+  int fatigue;
+  int injury;
+  bool stunned;
+  bool failedDeathCheck;
+  Posture posture;
+  Maneuver maneuver;
 
-  const Condition(
+  Condition(
       {this.fatigue = 0,
       this.injury = 0,
       this.maneuver = Maneuver.do_nothing,
@@ -286,15 +286,12 @@ typedef Character CharacterFactory(int id);
 ///
 class Combatant with ChangeNotifier {
   final int id;
-  final Condition condition;
+  final Condition _condition;
   final Character character;
 
-  Combatant(
-      {@required this.id,
-      @required this.character,
-      this.condition = const Condition()})
+  Combatant({@required this.id, @required this.character, Condition condition})
       : assert(id != null),
-        assert(condition != null);
+        _condition = (condition == null) ? Condition() : condition;
 
   Combatant.fromJSON(Map<String, dynamic> json)
       : this(
@@ -303,20 +300,28 @@ class Combatant with ChangeNotifier {
             character: null);
 
   FpConditionEnum get fpCondition => FpConditionEnum(
-      fp: character.secondaryAttrs.fp, fatigueLoss: condition.fatigue);
+      fp: character.secondaryAttrs.fp, fatigueLoss: _condition.fatigue);
 
-  PostureEnum get posture => PostureEnum(value: condition.posture);
+  PostureEnum get posture => PostureEnum(value: _condition.posture);
 
-  ManeuverEnum get maneuver => ManeuverEnum(value: condition.maneuver);
+  ManeuverEnum get maneuver => ManeuverEnum(value: _condition.maneuver);
 
   HpConditionEnum get hpCondition => HpConditionEnum(
       hitPoints: character.secondaryAttrs.hp,
-      injury: condition.injury,
-      failedDeathCheck: condition.failedDeathCheck);
+      injury: _condition.injury,
+      failedDeathCheck: _condition.failedDeathCheck);
+
+  Condition get condition => _condition;
 
   void setManeuver(String text) {
-    Maneuver m = Maneuver.values.firstWhere((it) => it.toString() == text);
-    maneuver.value = m;
-    notifyListeners();
+    for (var i = 0; i < maneuver.allValues.length; i++) {
+      if (maneuver.allValues[i] == text) {
+        var newValue = Maneuver.values[i];
+        if (_condition.maneuver != newValue) {
+          _condition.maneuver = newValue;
+          notifyListeners();
+        }
+      }
+    }
   }
 }
