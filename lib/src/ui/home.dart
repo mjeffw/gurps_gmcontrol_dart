@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gurps_gmcontrol_dart/src/blocs/bloc_provider.dart';
-import 'package:gurps_gmcontrol_dart/src/blocs/melee_bloc.dart';
-import 'package:gurps_gmcontrol_dart/src/ui/melee_view.dart';
+import 'package:gurps_gmcontrol_dart/src/apis/melee_api.dart';
+import 'package:gurps_gmcontrol_dart/src/models/melee.dart';
 import 'package:gurps_gmcontrol_dart/src/ui/widgets/default_app_bar.dart';
+import 'package:provider/provider.dart';
+
+import 'melee_view.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -23,12 +25,15 @@ class Home extends StatelessWidget {
   }
 
   void _openMeleeView(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) {
-      return BlocProvider<MeleeBloc>(
-        bloc: MeleeBloc(),
-        child: MeleeView(0),
-      );
-    }));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => ChangeNotifierProvider<Melee>(
+              builder: (_) {
+                meleeApi.fetch(index: 0);
+              },
+              child: MeleeView(),
+            ),
+      ),
+    );
   }
 }

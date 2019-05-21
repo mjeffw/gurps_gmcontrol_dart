@@ -14,7 +14,8 @@ class MeleeApi {
 
     var temp = Melee.fromJSON(json.decode(_meleeJsonText));
     var list = await resolveList(temp);
-    var melee = Melee(id: temp.id, selected: temp.selected, combatants: list);
+
+    var melee = Melee(id: temp.id, combatants: list);
     return melee;
   }
 

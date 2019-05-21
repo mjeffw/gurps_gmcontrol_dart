@@ -84,7 +84,7 @@ class SecondaryAttributes {
 /// Represents a single participant within a Melee.
 ///
 class Character {
-  /// This uniquely identifies a Combatant instance.
+  /// This uniquely identifies a Character instance.
   final int id;
   final Bio bio;
   final BasicAttributes basicAttrs;

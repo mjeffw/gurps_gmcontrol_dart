@@ -284,7 +284,7 @@ typedef Character CharacterFactory(int id);
 /// The Character's ID is stored here, to have a real Combatant the character
 /// info has to be read.
 ///
-class Combatant {
+class Combatant with ChangeNotifier {
   final int id;
   final Condition condition;
   final Character character;
@@ -313,4 +313,10 @@ class Combatant {
       hitPoints: character.secondaryAttrs.hp,
       injury: condition.injury,
       failedDeathCheck: condition.failedDeathCheck);
+
+  void setManeuver(String text) {
+    Maneuver m = Maneuver.values.firstWhere((it) => it.toString() == text);
+    maneuver.value = m;
+    notifyListeners();
+  }
 }
