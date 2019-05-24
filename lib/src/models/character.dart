@@ -25,7 +25,7 @@ class BasicAttributes {
 
   /// Dexterity (DX) is a composite measure of agility, coordination, and fine
   /// motor ability.
-  final int dx;
+  int dx;
 
   /// Intelligence (IQ) is a broad measure of brainpower: creativity, cunning,
   /// memory, reason, and so on.
@@ -48,16 +48,16 @@ class BasicAttributes {
             ht: json['HT'] as int);
 }
 
-class SecondaryAttributes {
+class SecondaryAttributes with ChangeNotifier {
   final int move;
   final int per;
-  final double speed;
+  double _speed;
   final int will;
   final int fp;
   final int hp;
 
   SecondaryAttributes(
-      {this.speed = 5.0,
+      {double speed = 5.0,
       this.per = 10,
       this.will = 10,
       this.move = 5,
@@ -68,7 +68,8 @@ class SecondaryAttributes {
         assert(will != null),
         assert(per != null),
         assert(hp != null),
-        assert(fp != null);
+        assert(fp != null),
+        _speed = speed;
 
   SecondaryAttributes.fromJSON(Map<String, dynamic> json)
       : this(
@@ -78,6 +79,12 @@ class SecondaryAttributes {
             speed: json['speed'] as double,
             hp: json['HP'] as int,
             fp: json['FP'] as int);
+
+  double get speed => _speed;
+  set speed(double speed) {
+    this.notifyListeners();
+    _speed = speed;
+  }
 }
 
 ///

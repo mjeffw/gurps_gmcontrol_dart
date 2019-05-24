@@ -15,7 +15,16 @@ class MeleeView extends StatelessWidget {
     final Melee melee = Provider.of<Melee>(context);
 
     return Scaffold(
-      appBar: DefaultAppBar(titleText: 'GMCONTROL MELEE'),
+      appBar: DefaultAppBar(
+        titleText: 'GMCONTROL MELEE',
+        actions: [
+          IconButton(
+            icon: Icon(Icons.sort),
+            tooltip: 'Sort to combat order',
+            onPressed: () => _sortToCombatOrder(melee),
+          ),
+        ],
+      ),
       body: Column(children: [Expanded(child: _listView(context, melee))]),
     );
   }
@@ -32,5 +41,9 @@ class MeleeView extends StatelessWidget {
       },
     );
     return list;
+  }
+
+  void _sortToCombatOrder(Melee melee) {
+    melee.sort();
   }
 }
