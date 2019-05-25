@@ -15,15 +15,15 @@ class MeleeView extends StatelessWidget {
     final Melee melee = Provider.of<Melee>(context);
 
     return Scaffold(
-      appBar: DefaultAppBar(
-        titleText: 'GMCONTROL MELEE',
-        actions: [
+      appBar: defaultAppBarGet(
+        titleText: 'MELEE',
+        bar: AppBar(actions: [
           IconButton(
             icon: Icon(Icons.sort),
             tooltip: 'Sort to combat order',
             onPressed: () => _sortToCombatOrder(melee),
           ),
-        ],
+        ]),
       ),
       body: Column(children: [Expanded(child: _listView(context, melee))]),
     );

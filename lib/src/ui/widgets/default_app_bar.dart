@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gurps_gmcontrol_dart/src/ui/styles.dart';
 
-class DefaultAppBar extends AppBar {
-  final String titleText;
+AppBar defaultAppBarGet({
+  String titleText,
+  Color backgroundColor = Styles.navBarBackground,
+  AppBar bar,
+}) {
+  var appbar = AppBar(
+    title: Text(titleText.toUpperCase(), style: Styles.navBarTitle),
+    backgroundColor: Styles.navBarBackground,
+    centerTitle: Styles.navBarCenterTitle,
+    elevation: Styles.navBarElevation,
+    iconTheme: Styles.navBarIconTheme,
+    actions: bar.actions,
+    actionsIconTheme: bar.actionsIconTheme,
+    automaticallyImplyLeading: bar.automaticallyImplyLeading,
+    bottom: bar.bottom,
+    bottomOpacity: bar.bottomOpacity,
+    brightness: bar.brightness,
+    flexibleSpace: bar.flexibleSpace,
+    key: bar.key,
+    leading: bar.leading,
+    primary: bar.primary,
+    shape: bar.shape,
+    textTheme: bar.textTheme,
+    titleSpacing: bar.titleSpacing,
+    toolbarOpacity: bar.toolbarOpacity,
+  );
 
-  DefaultAppBar({@required this.titleText, List<Widget> actions})
-      : super(
-          title: Text(titleText.toUpperCase(), style: Styles.navBarTitle),
-          actions: actions,
-          backgroundColor: Colors.black,
-          centerTitle: true,
-          elevation: 0.5,
-          iconTheme: IconThemeData(color: Colors.blue),
-        );
+  return appbar;
 }
